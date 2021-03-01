@@ -8,6 +8,7 @@ import java.util.*;
 import com.bastiaanjansen.jwt.Exceptions.JWTCreationException;
 import com.bastiaanjansen.jwt.Exceptions.JWTDecodeException;
 import com.bastiaanjansen.jwt.Exceptions.SignException;
+import com.bastiaanjansen.jwt.Utils.Base64Utils;
 import org.json.JSONObject;
 
 /**
@@ -17,62 +18,75 @@ public class JWT {
 
     private final Algorithm algorithm;
     private final JSONObject header;
-    private final JSONObject claims;
+    private final JSONObject payload;
 
-    public JWT(Algorithm algorithm, JSONObject header, JSONObject claims) {
+    public JWT(Algorithm algorithm, JSONObject header, JSONObject payload) {
         this.algorithm = algorithm;
         this.header = header;
-        this.claims = claims;
+        this.payload = payload;
     }
 
-    public JWT(Algorithm algorithm, String jwt) throws JWTDecodeException {
+    private JWT(Builder builder) {
+        algorithm = builder.algorithm;
+        payload = mapToJSON(builder.claims);
+        header = mapToJSON(builder.header);
+    }
 
+    /**
+     * Create a new JWT instance based on a raw JWT
+     *
+     * @param algorithm algorithm to use when signing JWT
+     * @param jwt Raw JWT
+     * @return Newly created JWT instance
+     * @throws JWTDecodeException When the raw JWT could not be decoded
+     */
+    public static JWT fromRawJWT(Algorithm algorithm, String jwt) throws JWTDecodeException {
         String[] segments = jwt.split("\\.");
 
         if (segments.length != 3)
             throw new JWTDecodeException("The number of segments is not 3");
 
-        this.algorithm = algorithm;
-        this.header = new JSONObject(decodeBase64URL(segments[0]));
-        this.claims = new JSONObject(decodeBase64URL(segments[1]));
+        JSONObject header = new JSONObject(Base64Utils.decodeBase64URL(segments[0]));
+        JSONObject claims = new JSONObject(Base64Utils.decodeBase64URL(segments[1]));
+
+        return new JWT(algorithm, header, claims);
     }
 
-    private JWT(Builder builder) {
-        algorithm = builder.algorithm;
-        claims = mapToJSON(builder.claims);
-        header = mapToJSON(builder.header);
-    }
-
+    /**
+     * Create a new JWT
+     *
+     * @return A new JWT
+     * @throws JWTCreationException when JWT could not be created
+     */
     public String sign() throws JWTCreationException {
-        String headerBase64URLEncoded = encodeBase64URL(header.toString());
-        String claimsBase64URLEncoded = encodeBase64URL(claims.toString());
+        String headerBase64URLEncoded = Base64Utils.encodeBase64URL(header.toString());
+        String claimsBase64URLEncoded = Base64Utils.encodeBase64URL(payload.toString());
         return String.format("%s.%s.%s", headerBase64URLEncoded, claimsBase64URLEncoded, createSignature());
     }
 
-    private JSONObject mapToJSON(Map<String, ?> json) {
-        return new JSONObject(json);
+    /**
+     * Convert map to JSONObject
+     *
+     * @param map which to convert to json
+     * @return JSONObject
+     */
+    private JSONObject mapToJSON(Map<String, ?> map) {
+        return new JSONObject(map);
     }
 
-    private String encodeBase64URL(String data) {
-        return encodeBase64URL(data.getBytes(StandardCharsets.UTF_8));
-    }
-
-    private String encodeBase64URL(byte[] data) {
-        return Base64.getUrlEncoder().withoutPadding().encodeToString(data);
-    }
-
-    private String decodeBase64URL(String encoded) {
-        byte[] decoded = Base64.getUrlDecoder().decode(encoded);
-        return new String(decoded);
-    }
-
+    /**
+     * Create signature based on algorithm, header and payload
+     *
+     * @return Created signature
+     * @throws JWTCreationException when Sign exception occurs
+     */
     private String createSignature() throws JWTCreationException {
-        String headerBase64URLEncoded = encodeBase64URL(header.toString());
-        String claimsBase64URLEncoded = encodeBase64URL(claims.toString());
+        String headerBase64URLEncoded = Base64Utils.encodeBase64URL(header.toString());
+        String claimsBase64URLEncoded = Base64Utils.encodeBase64URL(payload.toString());
 
         try {
             byte[] signed = algorithm.sign((headerBase64URLEncoded + "." + claimsBase64URLEncoded).getBytes(StandardCharsets.UTF_8));
-            return encodeBase64URL(signed);
+            return Base64Utils.encodeBase64URL(signed);
         } catch (SignException e) {
             throw new JWTCreationException("Something went wrong creating JWT");
         }
@@ -269,8 +283,8 @@ public class JWT {
         return algorithm;
     }
 
-    public JSONObject getClaims() {
-        return claims;
+    public JSONObject getPayload() {
+        return payload;
     }
 
     public JSONObject getHeader() {

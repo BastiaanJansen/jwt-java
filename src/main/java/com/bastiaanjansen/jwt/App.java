@@ -16,8 +16,8 @@ public class App {
             String jwt = builder.sign();
             System.out.println(jwt);
 
-            JWT newJWT = new JWT(algorithm, jwt);
-            System.out.println(newJWT.getClaims());
+            JWT newJWT = JWT.fromRawJWT(algorithm, jwt);
+            System.out.println(newJWT.getPayload());
         } catch (JWTCreationException | JWTDecodeException e) {
             e.printStackTrace();
         }

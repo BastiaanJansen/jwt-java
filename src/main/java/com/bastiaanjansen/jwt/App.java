@@ -2,19 +2,23 @@ package com.bastiaanjansen.jwt;
 
 import com.bastiaanjansen.jwt.Algorithms.Algorithm;
 import com.bastiaanjansen.jwt.Exceptions.JWTCreationException;
+import com.bastiaanjansen.jwt.Exceptions.JWTDecodeException;
 
 public class App {
     public static void main(String[] args) {
 //        Algorithm algorithm = Algorithm.HMAC256("secret");
         Algorithm algorithm = Algorithm.HMAC384("secret");
-        JWTCreator.Builder creator = new JWTCreator.Builder(algorithm);
+        JWT.Builder builder = new JWT.Builder(algorithm);
 
-        creator.withIssuer("issuer");
+        builder.withIssuer("issuer");
 
         try {
-            String jwt = creator.sign();
+            String jwt = builder.sign();
             System.out.println(jwt);
-        } catch (JWTCreationException e) {
+
+            JWT newJWT = new JWT(algorithm, jwt);
+            System.out.println(newJWT.getClaims());
+        } catch (JWTCreationException | JWTDecodeException e) {
             e.printStackTrace();
         }
     }

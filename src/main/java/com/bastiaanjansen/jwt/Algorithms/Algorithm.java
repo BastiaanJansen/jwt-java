@@ -1,8 +1,11 @@
 package com.bastiaanjansen.jwt.Algorithms;
 
 import com.bastiaanjansen.jwt.Exceptions.SignException;
+import com.bastiaanjansen.jwt.JWT;
 
 import java.nio.charset.StandardCharsets;
+import java.security.interfaces.RSAPrivateKey;
+import java.security.interfaces.RSAPublicKey;
 
 public abstract class Algorithm {
 
@@ -26,9 +29,15 @@ public abstract class Algorithm {
         return new HMACAlgorithm("HS512", "HmacSHA512", secret.getBytes(StandardCharsets.UTF_8));
     }
 
+    public static Algorithm RSA384(RSAPrivateKey privateKey, RSAPublicKey publicKey) {
+        return new RSAAlgorithm("RS384", "SHA384withRSA", privateKey, publicKey);
+    }
+
     public abstract byte[] sign(String data) throws SignException;
 
     public abstract byte[] sign(byte[] data) throws SignException;
+
+    public abstract boolean verify(JWT jwt);
 
     public String getName() {
         return name;

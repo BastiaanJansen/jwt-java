@@ -1,12 +1,16 @@
 package com.bastiaanjansen.jwt.Algorithms;
 
+import com.bastiaanjansen.jwt.Exceptions.JWTCreationException;
 import com.bastiaanjansen.jwt.Exceptions.SignException;
+import com.bastiaanjansen.jwt.JWT;
 
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 import java.nio.charset.StandardCharsets;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
+import java.security.PublicKey;
+import java.security.Signature;
 
 public class HMACAlgorithm extends Algorithm {
 
@@ -35,4 +39,20 @@ public class HMACAlgorithm extends Algorithm {
             throw new SignException(e.getMessage());
         }
     }
+
+    @Override
+    public boolean verify(JWT jwt) {
+        try {
+            String jwtString = jwt.sign();
+            String[] segments = jwtString.split("\\.");
+            String signature = segments[2];
+
+            return signature.equals(jwt.getSignature());
+
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+
 }

@@ -1,6 +1,7 @@
 package com.bastiaanjansen.jwt.Utils;
 
 import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
 import java.util.Base64;
 
 /**

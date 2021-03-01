@@ -239,7 +239,7 @@ public class JWT {
          */
         public String sign() throws JWTCreationException {
             if (!header.containsKey(Header.Registered.TYPE))
-                withTypeHeader("JWT");
+                withType("JWT");
             return new JWT(this).sign();
         }
 

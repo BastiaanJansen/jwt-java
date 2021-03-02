@@ -118,6 +118,7 @@ String rawJWT = "eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJpc3N1ZXIiLCJzdW
 Algorithm algorithm = Algorithm.HMAC512(secret);
 
 try {
+
   JWT jwt = JWT.fromRawJWT(algorithm, jwt);
   
   Header header = jwt.getHeader();

@@ -1,7 +1,6 @@
 package com.bastiaanjansen.jwt.Algorithms;
 
-import com.bastiaanjansen.jwt.Exceptions.JWTCreationException;
-import com.bastiaanjansen.jwt.Exceptions.SignException;
+import com.bastiaanjansen.jwt.Exceptions.JWTSignException;
 import com.bastiaanjansen.jwt.JWT;
 
 import javax.crypto.Mac;
@@ -9,8 +8,6 @@ import javax.crypto.spec.SecretKeySpec;
 import java.nio.charset.StandardCharsets;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
-import java.security.PublicKey;
-import java.security.Signature;
 
 public class HMACAlgorithm extends Algorithm {
 
@@ -22,12 +19,12 @@ public class HMACAlgorithm extends Algorithm {
     }
 
     @Override
-    public byte[] sign(String data) throws SignException {
+    public byte[] sign(String data) throws JWTSignException {
         return sign(data.getBytes(StandardCharsets.UTF_8));
     }
 
     @Override
-    public byte[] sign(byte[] data) throws SignException {
+    public byte[] sign(byte[] data) throws JWTSignException {
         try {
             Mac HMAC = Mac.getInstance(description);
 
@@ -36,7 +33,7 @@ public class HMACAlgorithm extends Algorithm {
 
             return HMAC.doFinal(data);
         } catch (NoSuchAlgorithmException | InvalidKeyException e) {
-            throw new SignException(e.getMessage());
+            throw new JWTSignException(e.getMessage());
         }
     }
 

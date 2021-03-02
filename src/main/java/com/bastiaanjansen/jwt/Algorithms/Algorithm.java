@@ -1,6 +1,6 @@
 package com.bastiaanjansen.jwt.Algorithms;
 
-import com.bastiaanjansen.jwt.Exceptions.SignException;
+import com.bastiaanjansen.jwt.Exceptions.JWTSignException;
 import com.bastiaanjansen.jwt.JWT;
 
 import java.nio.charset.StandardCharsets;
@@ -33,9 +33,9 @@ public abstract class Algorithm {
         return new RSAAlgorithm("RS384", "SHA384withRSA", privateKey, publicKey);
     }
 
-    public abstract byte[] sign(String data) throws SignException;
+    public abstract byte[] sign(String data) throws JWTSignException;
 
-    public abstract byte[] sign(byte[] data) throws SignException;
+    public abstract byte[] sign(byte[] data) throws JWTSignException;
 
     public abstract boolean verify(JWT jwt);
 

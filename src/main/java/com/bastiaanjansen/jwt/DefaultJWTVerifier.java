@@ -1,43 +1,41 @@
 package com.bastiaanjansen.jwt;
 
+import com.bastiaanjansen.jwt.Exceptions.JWTExpiredException;
 import com.bastiaanjansen.jwt.Exceptions.JWTValidationException;
 
 import java.util.Date;
 import java.util.Map;
 
+/**
+ * Default implementation of a JWT verifier.
+ *
+ * @author Bastiaan Jansen
+ * @see JWTVerifier
+ */
 public class DefaultJWTVerifier implements JWTVerifier {
 
-    private final JWT jwt;
     private final Header headerConditions;
     private final Payload payloadConditions;
 
-    public DefaultJWTVerifier(JWT jwt) {
-        this(new Builder(jwt).withType("JWT"));
+    public DefaultJWTVerifier() {
+        this(new Builder().withType("JWT"));
     }
 
     public DefaultJWTVerifier(Builder builder) {
-        this.jwt = builder.jwt;
         this.headerConditions = builder.header;
         this.payloadConditions = builder.payload;
-
     }
 
     @Override
-    public void verify() throws JWTValidationException {
-        verifyHeader();
-        verifyPayload();
-//        if (payload.getExpirationTime() != null) {
-//            Object payloadExpirationDate = payload.getExpirationTime();
-//            if (LocalDate.now().compareTo(LocalDate.parse(payloadExpirationDate.toString())) < 0)
-//                return false;
-//        }
+    public void verify(JWT jwt) throws JWTValidationException {
+        verifyHeader(jwt.getHeader());
+        verifyPayload(jwt.getPayload());
 
         if (!jwt.getAlgorithm().verify(jwt))
             throw new JWTValidationException("Signature is not valid");
     }
 
-    private void verifyHeader() throws JWTValidationException {
-        Header header = jwt.getHeader();
+    private void verifyHeader(Header header) throws JWTValidationException {
         for (Map.Entry<String, Object> condition: headerConditions.entrySet()) {
             if (!header.containsKey(condition.getKey()))
                 throw new JWTValidationException(condition.getKey() + " is not present in header");
@@ -47,19 +45,38 @@ public class DefaultJWTVerifier implements JWTVerifier {
         }
     }
 
-    private void verifyPayload() throws JWTValidationException {
-        Payload payload = jwt.getPayload();
+    private void verifyPayload(Payload payload) throws JWTValidationException {
+        Date currentDate = new Date();
+
+        if (payload.containsKey(Payload.Registered.EXPIRATION_TIME)) {
+            Date expirationTime = payload.getExpirationTime();
+            if (currentDate.getTime() > expirationTime.getTime())
+                throw new JWTExpiredException("JWT expired on " + expirationTime);
+        }
+
+        // Checks that if the not-before (nbf) claim is set, the current date is after or equal to the not-before date.
+        if (payload.containsKey(Payload.Registered.NOT_BEFORE)) {
+            Date notBefore = payload.getNotBefore();
+            if (currentDate.getTime() <= notBefore.getTime())
+                throw new JWTValidationException("JWT is only valid after " + notBefore);
+        }
+
+        for (Map.Entry<String, Object> condition: payloadConditions.entrySet()) {
+            if (!payload.containsKey(condition.getKey()))
+                throw new JWTValidationException(condition.getKey() + " is not present in payload");
+
+            if (!payload.get(condition.getKey()).equals(condition.getValue()))
+                throw new JWTValidationException(condition.getKey() + " is not " + condition.getValue());
+        }
     }
 
     public static class Builder {
         private final Header header;
         private final Payload payload;
-        private final JWT jwt;
 
-        public Builder(JWT jwt) {
+        public Builder() {
             this.header = new Header();
             this.payload = new Payload();
-            this.jwt = jwt;
         }
 
         public Builder withType(String type) {
@@ -112,8 +129,21 @@ public class DefaultJWTVerifier implements JWTVerifier {
             return this;
         }
 
+        public Builder withClaim(String name, Object value) {
+            payload.put(name, value);
+            return this;
+        }
+
         public DefaultJWTVerifier build() {
             return new DefaultJWTVerifier(this);
         }
+    }
+
+    public Header getHeaderConditions() {
+        return headerConditions;
+    }
+
+    public Payload getPayloadConditions() {
+        return payloadConditions;
     }
 }

@@ -8,7 +8,7 @@ import java.util.*;
 import com.bastiaanjansen.jwt.Exceptions.JWTCreationException;
 import com.bastiaanjansen.jwt.Exceptions.JWTDecodeException;
 import com.bastiaanjansen.jwt.Exceptions.JWTValidationException;
-import com.bastiaanjansen.jwt.Exceptions.SignException;
+import com.bastiaanjansen.jwt.Exceptions.JWTSignException;
 import com.bastiaanjansen.jwt.Utils.Base64Utils;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -64,6 +64,8 @@ public class JWT {
             String signature = segments[2];
 
             return new JWT(algorithm, new Header(header.toMap()), new Payload(payload.toMap()), signature);
+        } catch(IllegalArgumentException e) {
+            throw new JWTDecodeException("Error decoding JWT");
         } catch (JSONException e) {
             throw new JWTCreationException("JSON is not valid");
         }
@@ -74,11 +76,11 @@ public class JWT {
      *
      */
     public void verify(JWTVerifier verifier) throws JWTValidationException {
-        verifier.verify();
+        verifier.verify(this);
     }
 
     public void verify() throws JWTValidationException {
-        verify(new DefaultJWTVerifier(this));
+        verify(new DefaultJWTVerifier());
     }
 
     public static class Builder {
@@ -159,7 +161,7 @@ public class JWT {
         }
 
         /**
-         * Add a expiration time (exp) to payload
+         * Add an expiration time (exp) to payload
          *
          * @param expirationTime expiration time as date
          * @return the same builder instance
@@ -169,15 +171,21 @@ public class JWT {
             return this;
         }
 
+        /**
+         * Add an expiration time (exp) to payload
+         *
+         * @param timeSinceEpoch Milliseconds since January 1, 1970
+         * @return the same builder instance
+         */
         public Builder withExpirationTime(long timeSinceEpoch) {
             payload.setExpirationTime(timeSinceEpoch);
             return this;
         }
 
         /**
-         * Add a not before (nbf) claim to payload
+         * Add a not-before (nbf) claim to payload
          *
-         * @param notBefore not before date
+         * @param notBefore not before date object
          * @return the same builder instance
          */
         public Builder withNotBefore(Date notBefore) {
@@ -185,13 +193,19 @@ public class JWT {
             return this;
         }
 
+        /**
+         * Add a not-before (nbf) claim to payload
+         *
+         * @param timeSinceEpoch Milliseconds since January 1, 1970
+         * @return the same builder instance
+         */
         public Builder withNotBefore(long timeSinceEpoch) {
             payload.setNotBefore(timeSinceEpoch);
             return this;
         }
 
         /**
-         * Add a issued at (iat) claim to payload
+         * Add an issued at (iat) claim to payload
          *
          * @param issuedAt issued at date
          * @return the same builder instance
@@ -201,6 +215,12 @@ public class JWT {
             return this;
         }
 
+        /**
+         * Add an issued at (iat) claim to payload
+         *
+         * @param timeSinceEpoch Milliseconds since January 1, 1970
+         * @return the same builder instance
+         */
         public Builder withIssuedAt(long timeSinceEpoch) {
             payload.setIssuedAt(timeSinceEpoch);
             return this;
@@ -328,8 +348,8 @@ public class JWT {
             String concatinated = encodedHeaders + "." + encodedPayload;
             byte[] signed = algorithm.sign(concatinated.getBytes(StandardCharsets.UTF_8));
             return Base64Utils.encodeBase64URL(signed);
-        } catch (SignException e) {
-            throw new JWTCreationException("Something went wrong creating JWT");
+        } catch (JWTSignException e) {
+            throw new JWTCreationException("Something went wrong signing JWT");
         }
     }
 

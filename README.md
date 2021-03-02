@@ -191,7 +191,7 @@ try {
 }
 ```
 
-#### Create your own verifier
+#### Create your own validator
 
 If the `DefaultJWTValidator` doesn't meet your requirements, you can create your own validator:
 ```java

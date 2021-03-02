@@ -77,17 +77,17 @@ public class DefaultJWTVerifier implements JWTVerifier {
             return this;
         }
 
-        public Builder withIssuer(Object issuer) {
+        public Builder withIssuer(String issuer) {
             payload.setIssuer(issuer);
             return this;
         }
 
-        public Builder withSubject(Object subject) {
+        public Builder withSubject(String subject) {
             payload.setSubject(subject);
             return this;
         }
 
-        public Builder withAudience(Object audience) {
+        public Builder withAudience(String audience) {
             payload.setAudience(audience);
             return this;
         }

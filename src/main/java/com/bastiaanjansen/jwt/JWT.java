@@ -81,7 +81,7 @@ public class JWT {
         verify(new DefaultJWTVerifier(this));
     }
 
-    public static class Builder implements JWTBuilder {
+    public static class Builder {
 
         private final Algorithm algorithm;
         private final Header header;
@@ -165,7 +165,12 @@ public class JWT {
          * @return the same builder instance
          */
         public Builder withExpirationTime(Date expirationTime) {
-            payload.setExpirationTime(expirationTime.getTime());
+            payload.setExpirationTime(expirationTime);
+            return this;
+        }
+
+        public Builder withExpirationTime(long timeSinceEpoch) {
+            payload.setExpirationTime(timeSinceEpoch);
             return this;
         }
 
@@ -176,7 +181,12 @@ public class JWT {
          * @return the same builder instance
          */
         public Builder withNotBefore(Date notBefore) {
-            payload.setNotBefore(notBefore.getTime());
+            payload.setNotBefore(notBefore);
+            return this;
+        }
+
+        public Builder withNotBefore(long timeSinceEpoch) {
+            payload.setNotBefore(timeSinceEpoch);
             return this;
         }
 
@@ -187,7 +197,12 @@ public class JWT {
          * @return the same builder instance
          */
         public Builder withIssuedAt(Date issuedAt) {
-            payload.setIssuedAt(issuedAt.getTime());
+            payload.setIssuedAt(issuedAt);
+            return this;
+        }
+
+        public Builder withIssuedAt(long timeSinceEpoch) {
+            payload.setIssuedAt(timeSinceEpoch);
             return this;
         }
 
@@ -310,7 +325,8 @@ public class JWT {
      */
     private String createSignature(String encodedHeaders, String encodedPayload) throws JWTCreationException {
         try {
-            byte[] signed = algorithm.sign((encodedHeaders + "." + encodedPayload).getBytes(StandardCharsets.UTF_8));
+            String concatinated = encodedHeaders + "." + encodedPayload;
+            byte[] signed = algorithm.sign(concatinated.getBytes(StandardCharsets.UTF_8));
             return Base64Utils.encodeBase64URL(signed);
         } catch (SignException e) {
             throw new JWTCreationException("Something went wrong creating JWT");

@@ -23,19 +23,30 @@ public class Header extends HashMap<String, Object> {
         put(Registered.TYPE, type);
     }
 
-    public Object getType() {
-        return get(Registered.TYPE);
+    public String getType() {
+        Object type = get(Registered.TYPE);
+        return getString(type);
     }
 
     public void setContentType(String value) {
         put(Registered.CONTENT_TYPE, value);
     }
 
-    public Object getContentType() {
-        return get(Registered.CONTENT_TYPE);
+    public String getContentType() {
+        Object contentType = get(Registered.CONTENT_TYPE);
+        return getString(contentType);
     }
 
     public void setAlgorithm(String algorithm) {
         put(Registered.ALGORITHM, algorithm);
+    }
+
+    public String getAlgorithm() {
+        Object algorithm = get(Registered.ALGORITHM);
+        return getString(algorithm);
+    }
+
+    private String getString(Object object) {
+        return object != null ? String.valueOf(object) : null;
     }
 }

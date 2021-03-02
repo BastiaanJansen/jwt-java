@@ -361,7 +361,7 @@ public class JWT {
             byte[] signed = algorithm.sign(concatinated.getBytes(StandardCharsets.UTF_8));
             return Base64Utils.encodeBase64URL(signed);
         } catch (JWTSignException e) {
-            throw new JWTCreationException("Something went wrong signing JWT");
+            throw new JWTCreationException(e.getMessage());
         }
     }
 

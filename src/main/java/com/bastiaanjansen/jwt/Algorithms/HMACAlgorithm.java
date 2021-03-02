@@ -1,7 +1,9 @@
 package com.bastiaanjansen.jwt.Algorithms;
 
 import com.bastiaanjansen.jwt.Exceptions.JWTSignException;
+import com.bastiaanjansen.jwt.Exceptions.JWTValidationException;
 import com.bastiaanjansen.jwt.JWT;
+import com.bastiaanjansen.jwt.Utils.Base64Utils;
 
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
@@ -38,16 +40,12 @@ public class HMACAlgorithm extends Algorithm {
     }
 
     @Override
-    public boolean verify(JWT jwt) {
+    public boolean verify(byte[] data, String expected) throws JWTValidationException {
         try {
-            String jwtString = jwt.sign();
-            String[] segments = jwtString.split("\\.");
-            String signature = segments[2];
-
-            return signature.equals(jwt.getSignature());
-
-        } catch (Exception e) {
-            return false;
+            byte[] signed = sign(data);
+            return Base64Utils.encodeBase64URL(signed).equals(expected);
+        } catch (JWTSignException e) {
+            throw new JWTValidationException(e.getMessage());
         }
     }
 

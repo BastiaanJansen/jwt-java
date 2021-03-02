@@ -2,7 +2,10 @@ package com.bastiaanjansen.jwt;
 
 import com.bastiaanjansen.jwt.Exceptions.JWTExpiredException;
 import com.bastiaanjansen.jwt.Exceptions.JWTValidationException;
+import com.bastiaanjansen.jwt.Utils.Base64Utils;
+import org.json.JSONObject;
 
+import java.nio.charset.StandardCharsets;
 import java.util.Date;
 import java.util.Map;
 
@@ -31,7 +34,11 @@ public class DefaultJWTVerifier implements JWTVerifier {
         verifyHeader(jwt.getHeader());
         verifyPayload(jwt.getPayload());
 
-        if (!jwt.getAlgorithm().verify(jwt))
+        String encodedHeaders = Base64Utils.encodeBase64URL(new JSONObject(jwt.getHeader()).toString());
+        String encodedPayload = Base64Utils.encodeBase64URL(new JSONObject(jwt.getPayload()).toString());
+
+        String concatinated = encodedHeaders + "." + encodedPayload;
+        if (!jwt.getAlgorithm().verify(concatinated.getBytes(StandardCharsets.UTF_8), jwt.getSignature()))
             throw new JWTValidationException("Signature is not valid");
     }
 

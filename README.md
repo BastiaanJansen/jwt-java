@@ -7,7 +7,7 @@
 
 JSON Web Token library for Java according to RFC 7519.
 
-# What are JSON Web Tokens?
+## What are JSON Web Tokens?
 
 JSON Web Token (JWT) is an open standard (RFC 7519) that defines a compact and self-contained way for securely transmitting information between parties as a JSON object. This information can be verified and trusted because it is digitally signed. JWTs can be signed using a secret (with the HMAC algorithm) or a public / private key pair using RSA or ECDSA.
 
@@ -18,11 +18,11 @@ JSON Web Tokens consist of three parts, which are seperated with `.`'s:
 
 A JWT has therefore the following structure: `xxxxx.yyyyy.zzzzz`
 
-## Header
+### Header
 
 The header holds information about the JWT. It typically consists of two parts: the type of the token, which is JWT, and the signing algorithm being used, such as HMAC SHA256 or RSA.
 
-## Payload
+### Payload
 
 The second part of the token is the payload, which contains the claims. Claims are statements about an entity and additional data. Reserved claims are called registred claims. There are seven registred claims:
 * `iss`: Issuer, identifies the principal that issued the JWT
@@ -33,18 +33,18 @@ The second part of the token is the payload, which contains the claims. Claims a
 * `iat`: Issued At, identifies the time at which the JWT was issued
 * `jti`: JWT ID, provides a unique identifier for the JWT
 
-## Signature
+### Signature
 
 To create the signature part you have to take the encoded header, the encoded payload, a secret, the algorithm specified in the header, and sign that.
 
-## Features
+### Features
 
 * Creating JSON Web Tokens
 * Validating JSON Web Tokens
 * Easy to learn API
 * Fluent interfaces 
 
-### Supported algorithms
+#### Supported algorithms
 
 | JWS        | Algorithm     |
 | -----------|---------------|
@@ -55,6 +55,6 @@ To create the signature part you have to take the encoded header, the encoded pa
 | RS384      | RSA384        |
 | RS512      | RSA512
 
-# Installation
+## Installation
 
-# Usage
+## Usage

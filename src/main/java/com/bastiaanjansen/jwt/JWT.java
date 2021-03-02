@@ -86,8 +86,8 @@ public class JWT {
     public static class Builder {
 
         private final Algorithm algorithm;
-        private final Header header;
-        private final Payload payload;
+        private Header header;
+        private Payload payload;
 
         /**
          * Creates a new JWT Builder instance
@@ -244,8 +244,20 @@ public class JWT {
          * @param value value of header claim
          */
         public Builder withHeader(String name, String value) {
-            if (value == null) throw new IllegalArgumentException("Header value cannot be null");
+            if (name == null || value == null) throw new IllegalArgumentException("Header value cannot be null");
             header.put(name, value);
+            return this;
+        }
+
+        public Builder withHeader(Header header) {
+            if (header == null) throw new IllegalArgumentException("Header cannot be null");
+            this.header = header;
+            return this;
+        }
+
+        public Builder withPayload(Payload payload) {
+            if (payload == null) throw new IllegalArgumentException("Payload cannot be null");
+            this.payload = payload;
             return this;
         }
 

@@ -111,4 +111,31 @@ String jwtString = jwt.sign();
 
 ### Parsing JWT's
 
+To parse raw JWT's, you can use the `JWT.fromRawJWT()` method which expects an `Algorithm` an a raw JWT string:
+```java
+String rawJWT = "eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJpc3N1ZXIiLCJzdWIiOiJzdWJqZWN0IiwianRpIjoiaWQiLCJhdWRpZW5jZSI6WyJhdWQxIiwiYXVkMiJdLCJ1c2VybmFtZSI6IkJhc3RpYWFuSmFuc2VuIn0.mu1sSfzaNKH1dJ-cC1bsrFEJiwZs7H0AhnFf5tR4D0062zsxpU90F3dMrSlbneTtrxVI3PGxJlCYN8kcfpJkpw";
+
+Algorithm algorithm = Algorithm.HMAC512(secret);
+
+try {
+  JWT jwt = JWT.fromRawJWT(algorithm, jwt);
+  
+  Header header = jwt.getHeader();
+  Payload payload = jwt.getPayload();
+  
+  // Get data from header and payload
+  String alg = header.getAlgorithm(); // "HS512"
+  String typ = header.getType(); // "JWT"
+  
+  String iss = payload.getIssuer(); // "issuer"
+  String sub = payload.getSubject(); // "subject"
+  String[] audience = payload.getAudience(); // ["aud1", "aud2"]
+  Object customClaim = payload.get("username"); // "BastiaanJansen"
+  
+} catch (JWTCreationException | JWTDecodeException e) {
+  e.printStackTrace(); // Handle error
+}
+
+```
+
 ### Validating JWT's

@@ -59,11 +59,11 @@ public class JWT {
             throw new JWTDecodeException("The number of segments is not 3");
 
         try {
-            JSONObject header = new JSONObject(Base64Utils.decodeBase64URL(segments[0]));
-            JSONObject payload = new JSONObject(Base64Utils.decodeBase64URL(segments[1]));
+            Header header = new Header(new JSONObject(Base64Utils.decodeBase64URL(segments[0])).toMap());
+            Payload payload = new Payload(new JSONObject(Base64Utils.decodeBase64URL(segments[1])).toMap());
             String signature = segments[2];
 
-            return new JWT(algorithm, new Header(header.toMap()), new Payload(payload.toMap()), signature);
+            return new JWT(algorithm, header, payload, signature);
         } catch(IllegalArgumentException e) {
             throw new JWTDecodeException("Error decoding JWT");
         } catch (JSONException e) {

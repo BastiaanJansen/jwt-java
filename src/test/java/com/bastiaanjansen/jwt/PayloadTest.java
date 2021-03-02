@@ -55,7 +55,7 @@ class PayloadTest {
     @Test
     void getAudience() {
         payload.setAudience("audience");
-        assertEquals(payload.getAudience(), "audience");
+        assertArrayEquals(payload.getAudience(), new String[]{ "audience" });
     }
 
     @Test

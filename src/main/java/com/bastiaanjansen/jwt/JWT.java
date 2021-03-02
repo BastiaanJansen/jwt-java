@@ -155,7 +155,7 @@ public class JWT {
          * @param audience audience value
          * @return the same builder instance
          */
-        public Builder withAudience(String audience) {
+        public Builder withAudience(String... audience) {
             payload.setAudience(audience);
             return this;
         }

@@ -1,5 +1,6 @@
 package com.bastiaanjansen.jwt;
 
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -39,13 +40,13 @@ public class Payload extends HashMap<String, Object> {
         return getString(subject);
     }
 
-    public void setAudience(String audience) {
+    public void setAudience(String... audience) {
         put(Registered.AUDIENCE, audience);
     }
 
-    public String getAudience() {
-        Object audience = get(Registered.AUDIENCE);
-        return getString(audience);
+    public String[] getAudience() {
+        Object[] audience = (Object[]) get(Registered.AUDIENCE);
+        return (String[]) audience;
     }
 
     public void setExpirationTime(long timeSinceEpoch) {

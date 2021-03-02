@@ -43,7 +43,7 @@ public class App {
             verifier.verify(jwt);
 
             Payload payload = jwt.getPayload();
-//
+
         } catch (JWTException e) {
             e.printStackTrace();
         }

@@ -187,6 +187,7 @@ JWTValidator validator = new DefaultJWTValidator.Builder()
   .withAlgorithm("HS512") // Enforce the alg in the header is set to HS512
   .withIssuer("issuer")
   .withID("id")
+  .withCLaim("username", "BastiaanJansen")
   .build();
 
 try {

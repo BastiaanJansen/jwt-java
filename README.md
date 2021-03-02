@@ -46,14 +46,10 @@ To create the signature part you have to take the Base64URL encoded header, the 
 
 #### Supported algorithms
 
-| JWS        | Algorithm     |
-| -----------|---------------|
-| HS256      | HMAC256       |
-| HS384      | HMAC384       |
-| HS512      | HMAC512       |
-| RS256      | RSA256        |
-| RS384      | RSA384        |
-| RS512      | RSA512
+|      | SHA256             | SHA256             | SHA512             |
+|------|:------------------:|:------------------:|:------------------:|
+| HMAC | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark:	|
+| RSA  | :heavy_check_mark:	| :heavy_check_mark: | :heavy_check_mark:	|	
 
 ## Installation
 

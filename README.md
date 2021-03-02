@@ -67,13 +67,18 @@ Of course, your secret should be much longer. When using HMAC512, the secret mus
 
 When you have chosen an algorithm, you can use the JWT Builder to define how the JWT must look like and sign the token:
 ```java
-String jwt = new JWT.Builder(algorithm)
+
+try {
+  String jwt = new JWT.Builder(algorithm)
   .withIssuer("issuer")
   .withAudience("aud1", "aud2")
   .withIssuedAt(new Date())
   .withID("id")
   .withClaim("username", "BastiaanJansen") // add custom claims
   .sign();
+} catch (JWTCreationException e) {
+  e.printStackTrace(); // Handle error
+}
 ```
 
 You can also define the header and payload before hand and add them without the JWT Builder:
@@ -88,7 +93,11 @@ payload.withIssuedAt(new Date());
 payload.withID("id");
 payload.put("username", "BastiaanJansen"); // add custom claims
 
-String jwt = new JWT(algorithm, header, payload).sign();
+try {
+  String jwt = new JWT(algorithm, header, payload).sign();
+} catch (JWTCreationException e) {
+  e.printStackTrace(); // Handle error
+}
 ```
 
 Thesee two ways of creating JWT's will generate the same tokens.
@@ -105,8 +114,12 @@ Header header = jwt.getHeader();
 Payload payload = jwt.getPayload();
 Algorithm algorithm = jwt.getAlgorithm();
 
-// To finally sign and get JWT String
-String jwtString = jwt.sign();
+try {
+  // To finally sign and get JWT String
+  String jwtString = jwt.sign();
+} catch (JWTCreationException e) {
+  e.printStackTrace(); // Handle error
+}
 ```
 
 ### Parsing JWT's

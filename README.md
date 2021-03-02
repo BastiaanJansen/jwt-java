@@ -206,3 +206,23 @@ public class CustomJWTValidator implements JWTValidator {
 }
 
 ```
+
+You can use your custom validator the same way as the `DefaultJWTValidator`:
+
+```java
+try {
+
+  JWTValidator customValidator = new CustomJWTValidator();
+  
+  // Give the verifier as argument
+  jwt.validate(customValidator);
+  
+  // Or verify directly on the verifier
+  customValidator.validate(jwt);
+  
+  // JWT is valid!
+  
+} catch (JWTValidationException e) {
+  e.printStackTrace(); // JWT is not valid, handle error
+}
+```

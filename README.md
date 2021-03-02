@@ -142,3 +142,67 @@ Object customClaim = payload.get("username"); // "BastiaanJansen"
 ```
 
 ### Validating JWT's
+
+#### Basic validation
+
+To validate a JWT, you can use a `JWTValidator`. To validate a token in it's most basic form, use the `validate()` method on a `JWT` instance:
+```java
+JWT jwt = JWT.fromRawJWT(algorithm, "eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJpc3N1ZXIiLCJzdWIiOiJzdWJqZWN0IiwianRpIjoiaWQiLCJhdWRpZW5jZSI6WyJhdWQxIiwiYXVkMiJdLCJ1c2VybmFtZSI6IkJhc3RpYWFuSmFuc2VuIn0.mu1sSfzaNKH1dJ-cC1bsrFEJiwZs7H0AhnFf5tR4D0062zsxpU90F3dMrSlbneTtrxVI3PGxJlCYN8kcfpJkpw");
+
+try {
+  
+  jwt.validate();
+  
+  // JWT is valid!
+  
+} catch (JWTValidationException e) {
+  e.printStackTrace(); // JWT is not valid, handle error
+}
+```
+The `validate()` method uses the `DefaultJWTValidator` class underneath. Which, by default, makes sure:
+* the type (typ) in header is set to "JWT"
+* when set, the expiration time is not exceeded,
+* when set, the not-before time is not after or equal current time,
+* the signature is valid
+
+#### Custom validation
+
+The `DefaultJWTValidator` does also support enforcing header or payload claims. This way you can make sure that, for example, the issuer is equal to something you expect. To use this feature, use the Builder of `DefaultJWTValidator`:
+```java
+
+JWTValidator validator = new DefaultJWTValidator.Builder()
+  .withAlgorithm("HS512") // Enforce the alg in the header is set to HS512
+  .withIssuer("issuer")
+  .withID("id")
+  .build();
+
+try {
+  
+  // Give the verifier as argument
+  jwt.validate(validator);
+  
+  // Or verify directly on the verifier
+  verifier.validate(jwt);
+  
+  // JWT is valid!
+  
+} catch (JWTValidationException e) {
+  e.printStackTrace(); // JWT is not valid, handle error
+}
+```
+
+#### Create your own verifier
+
+If the `DefaultJWTValidator` doesn't meet your requirements, you can create your own validator:
+```java
+
+public class CustomJWTValidator implements JWTValidator {
+
+  @Override
+  public void validate(JWT jwt) throws JWTValidationException {
+    // Validate JWT
+  }
+
+}
+
+```

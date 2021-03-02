@@ -121,22 +121,24 @@ try {
 
   JWT jwt = JWT.fromRawJWT(algorithm, jwt);
   
-  Header header = jwt.getHeader();
-  Payload payload = jwt.getPayload();
-  
-  // Get data from header and payload
-  String alg = header.getAlgorithm(); // "HS512"
-  String typ = header.getType(); // "JWT"
-  
-  String iss = payload.getIssuer(); // "issuer"
-  String sub = payload.getSubject(); // "subject"
-  String[] audience = payload.getAudience(); // ["aud1", "aud2"]
-  Object customClaim = payload.get("username"); // "BastiaanJansen"
-  
 } catch (JWTCreationException | JWTDecodeException e) {
   e.printStackTrace(); // Handle error
 }
 
+```
+When you have retrieved the `JWT` instance, you can get data from the header and payload:
+```java
+Header header = jwt.getHeader();
+Payload payload = jwt.getPayload();
+
+// Get data from header and payload
+String alg = header.getAlgorithm(); // "HS512"
+String typ = header.getType(); // "JWT"
+
+String iss = payload.getIssuer(); // "issuer"
+String sub = payload.getSubject(); // "subject"
+String[] audience = payload.getAudience(); // ["aud1", "aud2"]
+Object customClaim = payload.get("username"); // "BastiaanJansen"
 ```
 
 ### Validating JWT's

@@ -7,6 +7,7 @@ import java.util.*;
 
 import com.bastiaanjansen.jwt.Exceptions.JWTCreationException;
 import com.bastiaanjansen.jwt.Exceptions.JWTDecodeException;
+import com.bastiaanjansen.jwt.Exceptions.JWTValidationException;
 import com.bastiaanjansen.jwt.Exceptions.SignException;
 import com.bastiaanjansen.jwt.Utils.Base64Utils;
 import org.json.JSONException;
@@ -18,18 +19,18 @@ import org.json.JSONObject;
 public class JWT {
 
     private final Algorithm algorithm;
-    private final Map<String, ?> header;
-    private final Map<String, ?> payload;
+    private final Header header;
+    private final Payload payload;
     private final String signature;
 
-    public JWT(Algorithm algorithm, Map<String, ?> header, Map<String, ?> payload) throws JWTCreationException {
+    public JWT(Algorithm algorithm, Header header, Payload payload) throws JWTCreationException {
         this.algorithm = algorithm;
         this.header = header;
         this.payload = payload;
         this.signature = createSignature();
     }
 
-    private JWT(Algorithm algorithm,  Map<String, ?> header,  Map<String, ?> payload, String signature) {
+    private JWT(Algorithm algorithm, Header header, Payload payload, String signature) {
         this.algorithm = algorithm;
         this.header = header;
         this.payload = payload;
@@ -38,7 +39,7 @@ public class JWT {
 
     private JWT(Builder builder) throws JWTCreationException {
         algorithm = builder.algorithm;
-        payload = builder.claims;
+        payload = builder.payload;
         header = builder.header;
         signature = createSignature();
     }
@@ -62,7 +63,7 @@ public class JWT {
             JSONObject payload = new JSONObject(Base64Utils.decodeBase64URL(segments[1]));
             String signature = segments[2];
 
-            return new JWT(algorithm, header.toMap(), payload.toMap(), signature);
+            return new JWT(algorithm, new Header(header.toMap()), new Payload(payload.toMap()), signature);
         } catch (JSONException e) {
             throw new JWTCreationException("JSON is not valid");
         }
@@ -71,21 +72,20 @@ public class JWT {
     /**
      * Checks whether the JWT is valid
      *
-     * @return True when JWT is valid, false otherwise
      */
-    public boolean verify(JWTVerifier verifier) {
-        return verifier.verify();
+    public void verify(JWTVerifier verifier) throws JWTValidationException {
+        verifier.verify();
     }
 
-    public boolean verify() {
-        return verify(new DefaultJWTVerifier(this));
+    public void verify() throws JWTValidationException {
+        verify(new DefaultJWTVerifier(this));
     }
 
     public static class Builder implements JWTBuilder {
 
         private final Algorithm algorithm;
-        private final Map<String, Object> claims;
-        private final Map<String, Object> header;
+        private final Header header;
+        private final Payload payload;
 
         /**
          * Creates a new JWT Builder instance
@@ -97,10 +97,10 @@ public class JWT {
                 throw new IllegalArgumentException("Algorithm must not be null");
 
             this.algorithm = algorithm;
-            this.claims = new HashMap<>();
-            this.header = new HashMap<>();
+            this.header = new Header();
+            this.payload = new Payload();
 
-            withHeader(Header.Registered.ALGORITHM, algorithm.getName());
+            header.setAlgorithm(algorithm.getName());
         }
 
         /**
@@ -110,7 +110,7 @@ public class JWT {
          * @return the same builder instance
          */
         public Builder withType(String type) {
-            withHeader(Header.Registered.TYPE, type);
+            header.setType(type);
             return this;
         }
 
@@ -121,7 +121,7 @@ public class JWT {
          * @return the same builder instance
          */
         public Builder withContentType(String contentType) {
-            withHeader(Header.Registered.CONTENT_TYPE, contentType);
+            header.setContentType(contentType);
             return this;
         }
 
@@ -132,7 +132,7 @@ public class JWT {
          * @return the same builder instance
          */
         public Builder withIssuer(String issuer) {
-            withClaim(Claim.Registered.ISSUER, issuer);
+            payload.setIssuer(issuer);
             return this;
         }
 
@@ -143,7 +143,7 @@ public class JWT {
          * @return the same builder instance
          */
         public Builder withSubject(String subject) {
-            withClaim(Claim.Registered.SUBJECT, subject);
+            payload.setSubject(subject);
             return this;
         }
 
@@ -154,7 +154,7 @@ public class JWT {
          * @return the same builder instance
          */
         public Builder withAudience(String audience) {
-            withClaim(Claim.Registered.AUDIENCE, audience);
+            payload.setAudience(audience);
             return this;
         }
 
@@ -165,7 +165,7 @@ public class JWT {
          * @return the same builder instance
          */
         public Builder withExpirationTime(Date expirationTime) {
-            withClaim(Claim.Registered.EXPIRATION_TIME, expirationTime);
+            payload.setExpirationTime(expirationTime.getTime());
             return this;
         }
 
@@ -176,7 +176,7 @@ public class JWT {
          * @return the same builder instance
          */
         public Builder withNotBefore(Date notBefore) {
-            withClaim(Claim.Registered.NOT_BEFORE, notBefore);
+            payload.setNotBefore(notBefore.getTime());
             return this;
         }
 
@@ -187,7 +187,7 @@ public class JWT {
          * @return the same builder instance
          */
         public Builder withIssuedAt(Date issuedAt) {
-            withClaim(Claim.Registered.ISSUED_AT, issuedAt);
+            payload.setIssuedAt(issuedAt.getTime());
             return this;
         }
 
@@ -198,7 +198,7 @@ public class JWT {
          * @return the same builder instance
          */
         public Builder withID(String id) {
-            withHeader(Claim.Registered.JWT_ID, id);
+            payload.setID(id);
             return this;
         }
 
@@ -222,7 +222,7 @@ public class JWT {
          */
         public Builder withClaim(String name, Object value) {
             if (value == null) throw new IllegalArgumentException("Claim value cannot be null");
-            claims.put(name, value);
+            payload.put(name, value);
             return this;
         }
 
@@ -275,11 +275,11 @@ public class JWT {
         return algorithm;
     }
 
-    public  Map<String, ?> getPayload() {
+    public Payload getPayload() {
         return payload;
     }
 
-    public  Map<String, ?> getHeader() {
+    public Header getHeader() {
         return header;
     }
 

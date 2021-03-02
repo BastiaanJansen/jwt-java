@@ -1,29 +1,119 @@
 package com.bastiaanjansen.jwt;
 
-import java.time.LocalDate;
+import com.bastiaanjansen.jwt.Exceptions.JWTValidationException;
+
+import java.util.Date;
+import java.util.Map;
 
 public class DefaultJWTVerifier implements JWTVerifier {
 
     private final JWT jwt;
+    private final Header headerConditions;
+    private final Payload payloadConditions;
 
     public DefaultJWTVerifier(JWT jwt) {
-        this.jwt = jwt;
+        this(new Builder(jwt).withType("JWT"));
+    }
+
+    public DefaultJWTVerifier(Builder builder) {
+        this.jwt = builder.jwt;
+        this.headerConditions = builder.header;
+        this.payloadConditions = builder.payload;
+
     }
 
     @Override
-    public boolean verify() {
-        if (jwt.getHeader().containsKey(Header.Registered.TYPE) && !jwt.getHeader().get(Header.Registered.TYPE).toString().equalsIgnoreCase("JWT"))
-            return false;
+    public void verify() throws JWTValidationException {
+        verifyHeader();
+        verifyPayload();
+//        if (payload.getExpirationTime() != null) {
+//            Object payloadExpirationDate = payload.getExpirationTime();
+//            if (LocalDate.now().compareTo(LocalDate.parse(payloadExpirationDate.toString())) < 0)
+//                return false;
+//        }
 
-        if (!jwt.getHeader().containsKey(Header.Registered.ALGORITHM))
-            return false;
+        if (!jwt.getAlgorithm().verify(jwt))
+            throw new JWTValidationException("Signature is not valid");
+    }
 
-        if (jwt.getHeader().containsKey(Claim.Registered.EXPIRATION_TIME)) {
-            Object payloadExpirationDate = jwt.getPayload().get(Claim.Registered.EXPIRATION_TIME);
-            if (LocalDate.now().compareTo(LocalDate.parse(payloadExpirationDate.toString())) < 0)
-                return false;
+    private void verifyHeader() throws JWTValidationException {
+        Header header = jwt.getHeader();
+        for (Map.Entry<String, Object> condition: headerConditions.entrySet()) {
+            if (!header.containsKey(condition.getKey()))
+                throw new JWTValidationException(condition.getKey() + " is not present in header");
+
+            if (!header.get(condition.getKey()).equals(condition.getValue()))
+                throw new JWTValidationException(condition.getKey() + " is not " + condition.getValue());
+        }
+    }
+
+    private void verifyPayload() throws JWTValidationException {
+        Payload payload = jwt.getPayload();
+    }
+
+    public static class Builder {
+        private final Header header;
+        private final Payload payload;
+        private final JWT jwt;
+
+        public Builder(JWT jwt) {
+            this.header = new Header();
+            this.payload = new Payload();
+            this.jwt = jwt;
         }
 
-        return jwt.getAlgorithm().verify(jwt);
+        public Builder withType(String type) {
+            header.setType(type);
+            return this;
+        }
+
+        public Builder withContentType(String type) {
+            header.setContentType(type);
+            return this;
+        }
+
+        public Builder withAlgorithm(String algorithm) {
+            header.setAlgorithm(algorithm);
+            return this;
+        }
+
+        public Builder withIssuer(Object issuer) {
+            payload.setIssuer(issuer);
+            return this;
+        }
+
+        public Builder withSubject(Object subject) {
+            payload.setSubject(subject);
+            return this;
+        }
+
+        public Builder withAudience(Object audience) {
+            payload.setAudience(audience);
+            return this;
+        }
+
+        public Builder withExpirationTime(Date expirationTime) {
+            payload.setExpirationTime(expirationTime.getTime());
+            return this;
+        }
+
+        public Builder withNotBefore(Date notBefore) {
+            payload.setNotBefore(notBefore.getTime());
+            return this;
+        }
+
+        public Builder withIssuedAt(Date issuedAt) {
+            payload.setIssuedAt(issuedAt.getTime());
+            return this;
+        }
+
+        public Builder withID(String id) {
+            payload.setID(id);
+            return this;
+        }
+
+        public DefaultJWTVerifier build() {
+            return new DefaultJWTVerifier(this);
+        }
     }
 }

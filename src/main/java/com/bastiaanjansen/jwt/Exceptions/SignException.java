@@ -1,6 +1,6 @@
 package com.bastiaanjansen.jwt.Exceptions;
 
-public class SignException extends Exception {
+public class SignException extends JWTException {
 
     public SignException() {}
 

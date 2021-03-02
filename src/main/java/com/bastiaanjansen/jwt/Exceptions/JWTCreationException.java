@@ -1,6 +1,6 @@
 package com.bastiaanjansen.jwt.Exceptions;
 
-public class JWTCreationException extends Exception {
+public class JWTCreationException extends JWTException {
 
     public JWTCreationException() {}
 

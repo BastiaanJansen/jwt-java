@@ -1,6 +1,6 @@
 package com.bastiaanjansen.jwt.Exceptions;
 
-public class JWTDecodeException extends Exception {
+public class JWTDecodeException extends JWTException {
 
     public JWTDecodeException() {}
 

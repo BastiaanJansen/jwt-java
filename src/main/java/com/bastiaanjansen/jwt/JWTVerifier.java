@@ -1,5 +1,7 @@
 package com.bastiaanjansen.jwt;
 
+import com.bastiaanjansen.jwt.Exceptions.JWTValidationException;
+
 public interface JWTVerifier {
-    boolean verify();
+    void verify() throws JWTValidationException;
 }

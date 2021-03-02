@@ -37,10 +37,10 @@ public class App {
 
             System.out.println(jwt.sign());
 
-            JWTVerifier verifier = new DefaultJWTVerifier.Builder()
+            JWTValidator verifier = new DefaultJWTValidator.Builder()
                     .withType("JWT")
                     .build();
-            verifier.verify(jwt);
+            verifier.validate(jwt);
 
             Payload payload = jwt.getPayload();
 

@@ -75,12 +75,12 @@ public class JWT {
      * Checks whether the JWT is valid
      *
      */
-    public void verify(JWTVerifier verifier) throws JWTValidationException {
-        verifier.verify(this);
+    public void validate(JWTValidator verifier) throws JWTValidationException {
+        verifier.validate(this);
     }
 
-    public void verify() throws JWTValidationException {
-        verify(new DefaultJWTVerifier());
+    public void validate() throws JWTValidationException {
+        validate(new DefaultJWTValidator());
     }
 
     public static class Builder {

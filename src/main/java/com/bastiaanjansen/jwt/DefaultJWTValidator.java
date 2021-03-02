@@ -13,24 +13,24 @@ import java.util.Map;
  * Default implementation of a JWT verifier.
  *
  * @author Bastiaan Jansen
- * @see JWTVerifier
+ * @see JWTValidator
  */
-public class DefaultJWTVerifier implements JWTVerifier {
+public class DefaultJWTValidator implements JWTValidator {
 
     private final Header headerConditions;
     private final Payload payloadConditions;
 
-    public DefaultJWTVerifier() {
+    public DefaultJWTValidator() {
         this(new Builder().withType("JWT"));
     }
 
-    public DefaultJWTVerifier(Builder builder) {
+    public DefaultJWTValidator(Builder builder) {
         this.headerConditions = builder.header;
         this.payloadConditions = builder.payload;
     }
 
     @Override
-    public void verify(JWT jwt) throws JWTValidationException {
+    public void validate(JWT jwt) throws JWTValidationException {
         verifyHeader(jwt.getHeader());
         verifyPayload(jwt.getPayload());
 
@@ -141,8 +141,8 @@ public class DefaultJWTVerifier implements JWTVerifier {
             return this;
         }
 
-        public DefaultJWTVerifier build() {
-            return new DefaultJWTVerifier(this);
+        public DefaultJWTValidator build() {
+            return new DefaultJWTValidator(this);
         }
     }
 

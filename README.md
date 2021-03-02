@@ -93,7 +93,7 @@ String jwt = new JWT(algorithm, header, payload).sign();
 
 Thesee two ways of creating JWT's will generate the same tokens.
 
-You don't need to immediately sign your JWT. You can also just build a `JWT` instance. With a `JWT` instance, you can get the header, payload, algorithm and validate the token which will be cover in a later chapter. You can, for example, pass around this `JWT` instance to other objects without passing around `String` objects.
+You don't need to immediately sign your JWT. You can also just build a `JWT` instance. With a `JWT` instance, you can get the header, payload, algorithm and validate the token which will be covered in a later chapter. You can, for example, pass around this `JWT` instance to other objects without passing around `String` objects.
 
 ```java
 // Build JWT instance

@@ -5,7 +5,7 @@
 ![](https://img.shields.io/github/license/BastiaanJansen/JWT-Java)
 ![](https://img.shields.io/github/issues/BastiaanJansen/JWT-Java)
 
-JSON Web Token library for Java according to RFC 7519.
+JSON Web Token library for Java according to [RFC 7519](https://tools.ietf.org/html/rfc7519).
 
 ## What are JSON Web Tokens?
 

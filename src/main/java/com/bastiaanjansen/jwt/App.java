@@ -25,10 +25,12 @@ public class App {
 
         builder
                 .withIssuer("issuer")
-                .withAudience("audience")
+                .withAudience("audience", "audience2")
                 .withID("id")
                 .withIssuedAt(new Date())
-                .withNotBefore(now.getTime());
+                .withNotBefore(now.getTime())
+                .withClaim("username", "BastiaanJansen")
+                .withHeader("test", "test");
 
         try {
             JWT jwt = builder.build();
@@ -39,6 +41,10 @@ public class App {
 
             JWTValidator verifier = new DefaultJWTValidator.Builder()
                     .withType("JWT")
+                    .withNotBefore(now.getTime())
+                    .withOneOfAudience("audience")
+                    .withClaim("username", "BastiaanJansen"::equals)
+                    .withHeader("test", "test"::equals)
                     .build();
             verifier.validate(jwt);
 

@@ -23,7 +23,7 @@ public class Payload extends HashMap<String, Object> {
     }
 
     public void setIssuer(String issuer) {
-        put(Registered.ISSUER, issuer);
+        set(Registered.ISSUER, issuer);
     }
 
     public String getIssuer() {
@@ -32,7 +32,7 @@ public class Payload extends HashMap<String, Object> {
     }
 
     public void setSubject(String subject) {
-        put(Registered.SUBJECT, subject);
+        set(Registered.SUBJECT, subject);
     }
 
     public String getSubject() {
@@ -41,7 +41,7 @@ public class Payload extends HashMap<String, Object> {
     }
 
     public void setAudience(String... audience) {
-        put(Registered.AUDIENCE, audience);
+        set(Registered.AUDIENCE, audience);
     }
 
     public String[] getAudience() {
@@ -50,7 +50,7 @@ public class Payload extends HashMap<String, Object> {
     }
 
     public void setExpirationTime(long timeSinceEpoch) {
-        put(Registered.EXPIRATION_TIME, timeSinceEpoch);
+        set(Registered.EXPIRATION_TIME, timeSinceEpoch);
     }
 
     public void setExpirationTime(Date expirationTime) {
@@ -63,7 +63,7 @@ public class Payload extends HashMap<String, Object> {
     }
 
     public void setNotBefore(long timeSinceEpoch) {
-        put(Registered.NOT_BEFORE, timeSinceEpoch);
+        set(Registered.NOT_BEFORE, timeSinceEpoch);
     }
 
     public void setNotBefore(Date notBefore) {
@@ -76,7 +76,7 @@ public class Payload extends HashMap<String, Object> {
     }
 
     public void setIssuedAt(long timeSinceEpoch) {
-        put(Registered.ISSUED_AT, timeSinceEpoch);
+        set(Registered.ISSUED_AT, timeSinceEpoch);
     }
 
     public void setIssuedAt(Date issuedAt) {
@@ -89,12 +89,18 @@ public class Payload extends HashMap<String, Object> {
     }
 
     public void setID(String id) {
-        put(Registered.JWT_ID, id);
+        set(Registered.JWT_ID, id);
     }
 
     public String getID() {
         Object id = get(Registered.JWT_ID);
         return getString(id);
+    }
+
+    private void set(String name, Object value) {
+        if (name == null) throw new IllegalArgumentException("name cannot be null");
+        if (value == null) throw new IllegalArgumentException("value cannot be null");
+        put(name, value);
     }
 
     private String getString(Object object) {

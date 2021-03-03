@@ -6,7 +6,9 @@ import com.bastiaanjansen.jwt.Utils.Base64Utils;
 import org.json.JSONObject;
 
 import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -17,38 +19,41 @@ import java.util.Map;
  */
 public class DefaultJWTValidator implements JWTValidator {
 
-    private final Header headerConditions;
-    private final Payload payloadConditions;
+    private final Map<String, ClaimValidator> headerValidators;
+    private final Map<String, ClaimValidator> payloadValidators;
 
     public DefaultJWTValidator() {
         this(new Builder().withType("JWT"));
     }
 
     public DefaultJWTValidator(Builder builder) {
-        this.headerConditions = builder.header;
-        this.payloadConditions = builder.payload;
+        this.headerValidators = builder.headerValidators;
+        this.payloadValidators = builder.payloadValidators;
     }
 
     @Override
     public void validate(JWT jwt) throws JWTValidationException {
-        verifyHeader(jwt.getHeader());
-        verifyPayload(jwt.getPayload());
-
         String encodedHeaders = Base64Utils.encodeBase64URL(new JSONObject(jwt.getHeader()).toString());
         String encodedPayload = Base64Utils.encodeBase64URL(new JSONObject(jwt.getPayload()).toString());
 
-        String concatinated = encodedHeaders + "." + encodedPayload;
-        if (!jwt.getAlgorithm().verify(concatinated.getBytes(StandardCharsets.UTF_8), jwt.getSignature()))
+        String concatenated = encodedHeaders + "." + encodedPayload;
+        if (!jwt.getAlgorithm().verify(concatenated.getBytes(StandardCharsets.UTF_8), jwt.getSignature()))
             throw new JWTValidationException("Signature is not valid");
+
+        verifyValidators(jwt.getHeader(), headerValidators);
+        verifyPayload(jwt.getPayload());
     }
 
-    private void verifyHeader(Header header) throws JWTValidationException {
-        for (Map.Entry<String, Object> condition: headerConditions.entrySet()) {
-            if (!header.containsKey(condition.getKey()))
-                throw new JWTValidationException(condition.getKey() + " is not present in header");
+    private void verifyValidators(Map<String, Object> map , Map<String, ClaimValidator> validators) throws JWTValidationException {
+        for (Map.Entry<String, ClaimValidator> validatorEntry: validators.entrySet()) {
+            String key = validatorEntry.getKey();
+            ClaimValidator validator = validatorEntry.getValue();
 
-            if (!header.get(condition.getKey()).equals(condition.getValue()))
-                throw new JWTValidationException(condition.getKey() + " is not " + condition.getValue());
+            if (!map.containsKey(key))
+                throw new JWTValidationException(key + " is not present in payload");
+
+            if (!validator.validate(map.get(key)))
+                throw new JWTValidationException(key + " does not conform to constraint");
         }
     }
 
@@ -68,76 +73,97 @@ public class DefaultJWTValidator implements JWTValidator {
                 throw new JWTValidationException("JWT is only valid after " + notBefore);
         }
 
-        for (Map.Entry<String, Object> condition: payloadConditions.entrySet()) {
-            if (!payload.containsKey(condition.getKey()))
-                throw new JWTValidationException(condition.getKey() + " is not present in payload");
-
-            if (!payload.get(condition.getKey()).equals(condition.getValue()))
-                throw new JWTValidationException(condition.getKey() + " is not " + condition.getValue());
-        }
+        verifyValidators(payload, payloadValidators);
     }
 
     public static class Builder {
-        private final Header header;
-        private final Payload payload;
+        private final Map<String, ClaimValidator> headerValidators;
+        private final Map<String, ClaimValidator> payloadValidators;
 
         public Builder() {
-            this.header = new Header();
-            this.payload = new Payload();
+            this.headerValidators = new HashMap<>();
+            this.payloadValidators = new HashMap<>();
         }
 
         public Builder withType(String type) {
-            header.setType(type);
+            withHeader(Header.Registered.TYPE, type::equals);
             return this;
         }
 
         public Builder withContentType(String type) {
-            header.setContentType(type);
+            withHeader(Header.Registered.CONTENT_TYPE, type::equals);
             return this;
         }
 
         public Builder withAlgorithm(String algorithm) {
-            header.setAlgorithm(algorithm);
+            withHeader(Header.Registered.ALGORITHM, algorithm::equals);
             return this;
         }
 
         public Builder withIssuer(String issuer) {
-            payload.setIssuer(issuer);
+            withClaim(Payload.Registered.ISSUER, issuer::equals);
             return this;
         }
 
         public Builder withSubject(String subject) {
-            payload.setSubject(subject);
+            withClaim(Payload.Registered.SUBJECT, subject::equals);
             return this;
         }
 
-        public Builder withAudience(String audience) {
-            payload.setAudience(audience);
+        public Builder withOneOfAudience(String... audience) {
+            withClaim(Payload.Registered.AUDIENCE, value -> {
+                for (String audienceItem: audience) {
+                    if (Arrays.asList((Object[]) value).contains(audienceItem))
+                        return true;
+                }
+                return false;
+            });
             return this;
         }
 
         public Builder withExpirationTime(Date expirationTime) {
-            payload.setExpirationTime(expirationTime.getTime());
+            withClaim(Payload.Registered.EXPIRATION_TIME, value -> value.equals(expirationTime.getTime()));
             return this;
         }
 
         public Builder withNotBefore(Date notBefore) {
-            payload.setNotBefore(notBefore.getTime());
+            withClaim(Payload.Registered.NOT_BEFORE, value -> value.equals(notBefore.getTime()));
             return this;
         }
 
         public Builder withIssuedAt(Date issuedAt) {
-            payload.setIssuedAt(issuedAt.getTime());
+            withClaim(Payload.Registered.ISSUED_AT, value -> value.equals(issuedAt.getTime()));
             return this;
         }
 
         public Builder withID(String id) {
-            payload.setID(id);
+            withClaim(Payload.Registered.JWT_ID, id::equals);
+            return this;
+        }
+
+        public Builder withHeader(String name, Object value) {
+            withHeader(name, value::equals);
+            return this;
+        }
+
+        public Builder withHeader(String name, ClaimValidator validator) {
+            if (name == null) throw new IllegalArgumentException("name cannot be null");
+            if (validator == null) throw new IllegalArgumentException("validator cannot be null");
+
+            headerValidators.put(name, validator);
             return this;
         }
 
         public Builder withClaim(String name, Object value) {
-            payload.put(name, value);
+            withClaim(name, value::equals);
+            return this;
+        }
+
+        public Builder withClaim(String name, ClaimValidator validator) {
+            if (name == null) throw new IllegalArgumentException("name cannot be null");
+            if (validator == null) throw new IllegalArgumentException("validator cannot be null");
+
+            payloadValidators.put(name, validator);
             return this;
         }
 
@@ -146,11 +172,11 @@ public class DefaultJWTValidator implements JWTValidator {
         }
     }
 
-    public Header getHeaderConditions() {
-        return headerConditions;
+    public Map<String, ClaimValidator> getHeaderValidators() {
+        return headerValidators;
     }
 
-    public Payload getPayloadConditions() {
-        return payloadConditions;
+    public Map<String, ClaimValidator> getPayloadValidators() {
+        return payloadValidators;
     }
 }

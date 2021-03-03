@@ -20,7 +20,7 @@ public class Header extends HashMap<String, Object> {
     }
 
     public void setType(String type) {
-        put(Registered.TYPE, type);
+        set(Registered.TYPE, type);
     }
 
     public String getType() {
@@ -29,7 +29,7 @@ public class Header extends HashMap<String, Object> {
     }
 
     public void setContentType(String value) {
-        put(Registered.CONTENT_TYPE, value);
+        set(Registered.CONTENT_TYPE, value);
     }
 
     public String getContentType() {
@@ -38,7 +38,7 @@ public class Header extends HashMap<String, Object> {
     }
 
     public void setAlgorithm(String algorithm) {
-        put(Registered.ALGORITHM, algorithm);
+        set(Registered.ALGORITHM, algorithm);
     }
 
     public String getAlgorithm() {
@@ -48,5 +48,12 @@ public class Header extends HashMap<String, Object> {
 
     private String getString(Object object) {
         return object != null ? String.valueOf(object) : null;
+    }
+
+    private void set(String name, Object value) {
+        if (name == null) throw new IllegalArgumentException("name cannot be null");
+        if (value == null) throw new IllegalArgumentException("value cannot be null");
+
+        put(name, value);
     }
 }

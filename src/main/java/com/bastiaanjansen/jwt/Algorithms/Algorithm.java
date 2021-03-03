@@ -2,12 +2,9 @@ package com.bastiaanjansen.jwt.Algorithms;
 
 import com.bastiaanjansen.jwt.Exceptions.JWTSignException;
 import com.bastiaanjansen.jwt.Exceptions.JWTValidationException;
-import com.bastiaanjansen.jwt.JWT;
 
 import java.nio.charset.StandardCharsets;
 import java.security.KeyPair;
-import java.security.interfaces.RSAPrivateKey;
-import java.security.interfaces.RSAPublicKey;
 
 public abstract class Algorithm {
 

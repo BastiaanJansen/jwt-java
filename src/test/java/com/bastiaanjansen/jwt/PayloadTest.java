@@ -5,6 +5,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -20,6 +22,18 @@ class PayloadTest {
     @AfterEach
     void tearDown() {
         this.payload = null;
+    }
+
+    @Test
+    void createHeaderWithMap() {
+        Map<String, Object> map = new HashMap<>();
+        map.put(Payload.Registered.ISSUER, "issuer");
+        map.put(Payload.Registered.JWT_ID, "id");
+        payload = new Payload(map);
+        assertTrue(payload.containsKey(Payload.Registered.ISSUER));
+        assertTrue(payload.containsKey(Payload.Registered.JWT_ID));
+        assertEquals(payload.getIssuer(), "issuer");
+        assertEquals(payload.getID(), "id");
     }
 
     @Test

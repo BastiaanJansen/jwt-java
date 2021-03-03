@@ -14,6 +14,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 /**
+ * This object represents a JSON Web Token
+ *
  * @author Bastiaan Jansen
  */
 public class JWT {
@@ -72,13 +74,20 @@ public class JWT {
     }
 
     /**
-     * Checks whether the JWT is valid
+     * Checks whether the JWT is valid or not with a custom validator
      *
+     * @param validator JWT Validator
+     * @throws JWTValidationException when JWT is not valid
      */
-    public void validate(JWTValidator verifier) throws JWTValidationException {
-        verifier.validate(this);
+    public void validate(JWTValidator validator) throws JWTValidationException {
+        validator.validate(this);
     }
 
+    /**
+     * Checks whether the JWT is valid or not with the default JWT validator
+     *
+     * @throws JWTValidationException when JWT is not valid
+     */
     public void validate() throws JWTValidationException {
         validate(new DefaultJWTValidator());
     }
@@ -249,12 +258,24 @@ public class JWT {
             return this;
         }
 
+        /**
+         * Set the header. This will replace the current header
+         *
+         * @param header Header data
+         * @return the same builder instance
+         */
         public Builder withHeader(Header header) {
             if (header == null) throw new IllegalArgumentException("Header cannot be null");
             this.header = header;
             return this;
         }
 
+        /**
+         * Set the payload. This will replace the current payload
+         *
+         * @param payload Payload data
+         * @return the same builder instance
+         */
         public Builder withPayload(Payload payload) {
             if (payload == null) throw new IllegalArgumentException("Payload cannot be null");
             this.payload = payload;
@@ -266,6 +287,7 @@ public class JWT {
          *
          * @param name name of payload claim
          * @param value value of payload claim
+         * @return the same builder instance
          */
         public Builder withClaim(String name, Object value) {
             if (value == null) throw new IllegalArgumentException("Claim value cannot be null");
@@ -344,7 +366,7 @@ public class JWT {
         String encodedHeaders = Base64Utils.encodeBase64URL(new JSONObject(header).toString());
         String encodedPayload = Base64Utils.encodeBase64URL(new JSONObject(payload).toString());
 
-        String signature = createSignature(encodedHeaders, encodedPayload);
+        String signature = createSignature();
 
         return String.format("%s.%s.%s", encodedHeaders, encodedPayload, signature);
     }
@@ -355,19 +377,16 @@ public class JWT {
      * @return Created signature
      * @throws JWTCreationException when Sign exception occurs
      */
-    private String createSignature(String encodedHeaders, String encodedPayload) throws JWTCreationException {
+    private String createSignature() throws JWTCreationException {
+        String encodedHeaders = Base64Utils.encodeBase64URL(new JSONObject(header).toString());
+        String encodedPayload = Base64Utils.encodeBase64URL(new JSONObject(payload).toString());
+
         try {
-            String concatinated = encodedHeaders + "." + encodedPayload;
-            byte[] signed = algorithm.sign(concatinated.getBytes(StandardCharsets.UTF_8));
+            String concatenated = encodedHeaders + "." + encodedPayload;
+            byte[] signed = algorithm.sign(concatenated.getBytes(StandardCharsets.UTF_8));
             return Base64Utils.encodeBase64URL(signed);
         } catch (JWTSignException e) {
             throw new JWTCreationException(e.getMessage());
         }
-    }
-
-    private String createSignature() throws JWTCreationException {
-        String encodedHeaders = Base64Utils.encodeBase64URL(new JSONObject(header).toString());
-        String encodedPayload = Base64Utils.encodeBase64URL(new JSONObject(payload).toString());
-        return createSignature(encodedHeaders, encodedPayload);
     }
 }

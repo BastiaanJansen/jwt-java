@@ -33,15 +33,18 @@ public class DefaultJWTValidator implements JWTValidator {
 
     @Override
     public void validate(JWT jwt) throws JWTValidationException {
+        validateAlgorithm(jwt);
+        verifyValidators(jwt.getHeader(), headerValidators);
+        verifyPayload(jwt.getPayload());
+    }
+
+    private void validateAlgorithm(JWT jwt) throws JWTValidationException {
         String encodedHeaders = Base64Utils.encodeBase64URL(new JSONObject(jwt.getHeader()).toString());
         String encodedPayload = Base64Utils.encodeBase64URL(new JSONObject(jwt.getPayload()).toString());
 
         String concatenated = encodedHeaders + "." + encodedPayload;
         if (!jwt.getAlgorithm().verify(concatenated.getBytes(StandardCharsets.UTF_8), jwt.getSignature()))
             throw new JWTValidationException("Signature is not valid");
-
-        verifyValidators(jwt.getHeader(), headerValidators);
-        verifyPayload(jwt.getPayload());
     }
 
     private void verifyValidators(Map<String, Object> map , Map<String, ClaimValidator> validators) throws JWTValidationException {

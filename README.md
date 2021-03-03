@@ -80,6 +80,7 @@ try {
   e.printStackTrace(); // Handle error
 }
 ```
+> Signed JWT's automatically have the `typ` header claim set to "JWT"
 
 You can also define the header and payload before hand and add them without the JWT Builder:
 ```java

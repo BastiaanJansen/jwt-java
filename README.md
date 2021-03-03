@@ -187,7 +187,8 @@ JWTValidator validator = new DefaultJWTValidator.Builder()
   .withAlgorithm("HS512") // Enforce the alg in the header is set to HS512
   .withIssuer("issuer")
   .withID("id")
-  .withCLaim("username", "BastiaanJansen")
+  .withOneOfAudience("aud1", "aud2") // Enforce audience has "aud1" or "aud2"
+  .withCLaim("username", "BastiaanJansen") // Enforce custom claim value
   .build();
 
 try {
@@ -203,6 +204,23 @@ try {
 } catch (JWTValidationException e) {
   e.printStackTrace(); // JWT is not valid, handle error
 }
+```
+
+Or add custom validation logic:
+```java
+JWTValidator validator = new DefaultJWTValidator.Builder()
+  .withClaim("username", new ClaimValidator() {
+      @Override
+      public boolean validate(Object value) {
+          return "bastiaanjansen".equalsIgnoreCase(String.valueOf(value));
+      }
+  })
+  .build();
+  
+// Or use a lambda
+JWTValidator validator = new DefaultJWTValidator.Builder()
+  .withClaim("username", value -> "bastiaanjansen".equalsIgnoreCase(String.valueOf(value)))
+  .build()
 ```
 
 #### Create your own validator

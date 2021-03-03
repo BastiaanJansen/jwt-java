@@ -240,3 +240,8 @@ try {
   e.printStackTrace(); // JWT is not valid, handle error
 }
 ```
+
+## Sources
+Sources used to gather information about JSON Web Tokens:
+* [RFC 7519](https://tools.ietf.org/html/rfc7519)
+* [jwt.io](https://jwt.io/introduction)

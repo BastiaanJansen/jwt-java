@@ -131,9 +131,7 @@ String rawJWT = "eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJpc3N1ZXIiLCJzdW
 Algorithm algorithm = Algorithm.HMAC512(secret);
 
 try {
-
   JWT jwt = JWT.fromRawJWT(algorithm, jwt);
-  
 } catch (JWTCreationException | JWTDecodeException e) {
   e.printStackTrace(); // Handle error
 }
@@ -171,11 +169,9 @@ To validate a JWT, you can use a `JWTValidator`. To validate a token in it's mos
 JWT jwt = JWT.fromRawJWT(algorithm, "eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJpc3N1ZXIiLCJzdWIiOiJzdWJqZWN0IiwianRpIjoiaWQiLCJhdWRpZW5jZSI6WyJhdWQxIiwiYXVkMiJdLCJ1c2VybmFtZSI6IkJhc3RpYWFuSmFuc2VuIn0.mu1sSfzaNKH1dJ-cC1bsrFEJiwZs7H0AhnFf5tR4D0062zsxpU90F3dMrSlbneTtrxVI3PGxJlCYN8kcfpJkpw");
 
 try {
-  
   jwt.validate();
   
   // JWT is valid!
-  
 } catch (JWTValidationException e) {
   e.printStackTrace(); // JWT is not valid, handle error
 }
@@ -200,7 +196,6 @@ JWTValidator validator = new DefaultJWTValidator.Builder()
   .build();
 
 try {
-  
   // Give the verifier as argument
   jwt.validate(validator);
   
@@ -208,7 +203,6 @@ try {
   verifier.validate(jwt);
   
   // JWT is valid!
-  
 } catch (JWTValidationException e) {
   e.printStackTrace(); // JWT is not valid, handle error
 }
@@ -251,7 +245,6 @@ You can use your custom validator the same way as the `DefaultJWTValidator`:
 
 ```java
 try {
-
   JWTValidator customValidator = new CustomJWTValidator();
   
   // Give the verifier as argument
@@ -261,7 +254,6 @@ try {
   customValidator.validate(jwt);
   
   // JWT is valid!
-  
 } catch (JWTValidationException e) {
   e.printStackTrace(); // JWT is not valid, handle error
 }

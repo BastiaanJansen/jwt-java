@@ -89,8 +89,8 @@ header.setAlgorithm("HS512");
 Payload payload = new Payload();
 payload.setIssuer("issuer");
 payload.setAudience("aud1", "aud2");
-payload.withIssuedAt(new Date());
-payload.withID("id");
+payload.setIssuedAt(new Date());
+payload.setID("id");
 payload.put("username", "BastiaanJansen"); // add custom claims
 
 try {

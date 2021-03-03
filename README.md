@@ -40,9 +40,9 @@ To create the signature part you have to take the Base64URL encoded header, the 
 ### Features
 
 * Creating JSON Web Tokens
-* Validating JSON Web Tokens
-* Easy to learn API
-* Fluent interfaces 
+* Powerful JWT validation options
+* Self explanatory and easy to learn API
+* Fluent interfaces
 
 #### Supported algorithms
 

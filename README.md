@@ -72,6 +72,8 @@ To create the signature part you have to take the Base64URL encoded header, the 
 
 ## Installation
 
+Coming Soon
+
 ## Usage
 
 ### Choose algorithm

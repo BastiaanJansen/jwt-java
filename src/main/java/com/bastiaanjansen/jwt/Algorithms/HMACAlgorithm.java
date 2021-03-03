@@ -10,6 +10,7 @@ import javax.crypto.spec.SecretKeySpec;
 import java.nio.charset.StandardCharsets;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
+import java.util.Arrays;
 
 public class HMACAlgorithm extends Algorithm {
 
@@ -40,10 +41,11 @@ public class HMACAlgorithm extends Algorithm {
     }
 
     @Override
-    public boolean verify(byte[] data, String expected) throws JWTValidationException {
+    public boolean verify(byte[] data, byte[] expected) throws JWTValidationException {
         try {
             byte[] signed = sign(data);
-            return Base64Utils.encodeBase64URL(signed).equals(expected);
+
+            return Arrays.equals(signed, expected);
         } catch (JWTSignException e) {
             throw new JWTValidationException(e.getMessage());
         }

@@ -44,7 +44,7 @@ public abstract class Algorithm {
 
     public abstract byte[] sign(byte[] data) throws JWTSignException;
 
-    public abstract boolean verify(byte[] data, String expected) throws JWTValidationException;
+    public abstract boolean verify(byte[] data, byte[] expected) throws JWTValidationException;
 
     public String getName() {
         return name;

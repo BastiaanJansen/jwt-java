@@ -17,7 +17,7 @@ public class App {
         keyPairGenerator.initialize(2048, new SecureRandom());
         KeyPair pair = keyPairGenerator.generateKeyPair();
 
-        Algorithm algorithm = Algorithm.HMAC512("secret");
+        Algorithm algorithm = Algorithm.RSA384(pair);
         JWT.Builder builder = new JWT.Builder(algorithm);
 
         Calendar now = Calendar.getInstance();
@@ -39,18 +39,18 @@ public class App {
 
             jwt.validate();
 //
-//            System.out.println(jwt.sign());
+            System.out.println(jwt.sign());
 //
-//            JWTValidator verifier = new DefaultJWTValidator.Builder()
-//                    .withType("JWT")
-//                    .withNotBefore(now.getTime())
-//                    .withOneOfAudience("audience")
-//                    .withClaim("username", "BastiaanJansen"::equals)
-//                    .withHeader("test", "test"::equals)
-//                    .build();
-//            verifier.validate(jwt);
-//
-//            Payload payload = jwt.getPayload();
+            JWTValidator verifier = new DefaultJWTValidator.Builder()
+                    .withType("JWT")
+                    .withNotBefore(now.getTime())
+                    .withOneOfAudience("audience")
+                    .withClaim("username", "BastiaanJansen"::equals)
+                    .withHeader("test", "test"::equals)
+                    .build();
+            verifier.validate(jwt);
+
+            Payload payload = jwt.getPayload();
 
         } catch (JWTException e) {
             e.printStackTrace();

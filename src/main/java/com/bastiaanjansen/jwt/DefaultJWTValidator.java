@@ -6,10 +6,7 @@ import com.bastiaanjansen.jwt.Utils.Base64Utils;
 import org.json.JSONObject;
 
 import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Default implementation of a JWT verifier.
@@ -43,7 +40,7 @@ public class DefaultJWTValidator implements JWTValidator {
         String encodedPayload = Base64Utils.encodeBase64URL(new JSONObject(jwt.getPayload()).toString());
 
         String concatenated = encodedHeaders + "." + encodedPayload;
-        if (!jwt.getAlgorithm().verify(concatenated.getBytes(StandardCharsets.UTF_8), jwt.getSignature()))
+        if (!jwt.getAlgorithm().verify(concatenated.getBytes(StandardCharsets.UTF_8), Base64.getUrlDecoder().decode(jwt.getSignature())))
             throw new JWTValidationException("Signature is not valid");
     }
 

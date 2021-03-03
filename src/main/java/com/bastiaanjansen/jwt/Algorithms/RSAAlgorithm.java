@@ -36,13 +36,13 @@ public class RSAAlgorithm extends Algorithm {
     }
 
     @Override
-    public boolean verify(byte[] data, String expected) throws JWTValidationException {
+    public boolean verify(byte[] data, byte[] expected) throws JWTValidationException {
         try {
             final Signature signature = Signature.getInstance(description);
             signature.initVerify(keyPair.getPublic());
             signature.update(data);
 
-            return signature.verify(Base64.getUrlDecoder().decode(expected.getBytes(StandardCharsets.UTF_8)));
+            return signature.verify(expected);
         } catch (NoSuchAlgorithmException | InvalidKeyException | SignatureException e) {
             throw new JWTValidationException(e.getMessage());
         }

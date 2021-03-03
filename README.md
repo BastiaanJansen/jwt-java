@@ -67,13 +67,18 @@ Of course, your secret should be much longer. When using HMAC512, the secret mus
 
 When you have chosen an algorithm, you can use the JWT Builder to define how the JWT must look like and sign the token:
 ```java
-String jwt = new JWT.Builder(algorithm)
+
+try {
+  String jwt = new JWT.Builder(algorithm)
   .withIssuer("issuer")
   .withAudience("aud1", "aud2")
   .withIssuedAt(new Date())
   .withID("id")
   .withClaim("username", "BastiaanJansen") // add custom claims
   .sign();
+} catch (JWTCreationException e) {
+  e.printStackTrace(); // Handle error
+}
 ```
 
 You can also define the header and payload before hand and add them without the JWT Builder:
@@ -84,16 +89,20 @@ header.setAlgorithm("HS512");
 Payload payload = new Payload();
 payload.setIssuer("issuer");
 payload.setAudience("aud1", "aud2");
-payload.withIssuedAt(new Date());
-payload.withID("id");
+payload.setIssuedAt(new Date());
+payload.setID("id");
 payload.put("username", "BastiaanJansen"); // add custom claims
 
-String jwt = new JWT(algorithm, header, payload).sign();
+try {
+  String jwt = new JWT(algorithm, header, payload).sign();
+} catch (JWTCreationException e) {
+  e.printStackTrace(); // Handle error
+}
 ```
 
-Thesee two ways of creating JWT's will generate the same tokens.
+These two ways of creating JWT's will generate the same tokens.
 
-You don't need to immediately sign your JWT. You can also just build a `JWT` instance. With a `JWT` instance, you can get the header, payload, algorithm and validate the token which will be cover in a later chapter. You can, for example, pass around this `JWT` instance to other objects without passing around `String` objects.
+You don't need to immediately sign your JWT. You can also just build a `JWT` instance. With a `JWT` instance, you can get the header, payload, algorithm and validate the token which will be covered in a later chapter. You can, for example, pass around this `JWT` instance to other objects without passing around `String` objects.
 
 ```java
 // Build JWT instance
@@ -105,8 +114,12 @@ Header header = jwt.getHeader();
 Payload payload = jwt.getPayload();
 Algorithm algorithm = jwt.getAlgorithm();
 
-// To finally sign and get JWT String
-String jwtString = jwt.sign();
+try {
+  // To finally sign and get JWT String
+  String jwtString = jwt.sign();
+} catch (JWTCreationException e) {
+  e.printStackTrace(); // Handle error
+}
 ```
 
 ### Parsing JWT's
@@ -174,6 +187,7 @@ JWTValidator validator = new DefaultJWTValidator.Builder()
   .withAlgorithm("HS512") // Enforce the alg in the header is set to HS512
   .withIssuer("issuer")
   .withID("id")
+  .withCLaim("username", "BastiaanJansen")
   .build();
 
 try {
@@ -191,7 +205,7 @@ try {
 }
 ```
 
-#### Create your own verifier
+#### Create your own validator
 
 If the `DefaultJWTValidator` doesn't meet your requirements, you can create your own validator:
 ```java
@@ -206,3 +220,28 @@ public class CustomJWTValidator implements JWTValidator {
 }
 
 ```
+
+You can use your custom validator the same way as the `DefaultJWTValidator`:
+
+```java
+try {
+
+  JWTValidator customValidator = new CustomJWTValidator();
+  
+  // Give the verifier as argument
+  jwt.validate(customValidator);
+  
+  // Or verify directly on the verifier
+  customValidator.validate(jwt);
+  
+  // JWT is valid!
+  
+} catch (JWTValidationException e) {
+  e.printStackTrace(); // JWT is not valid, handle error
+}
+```
+
+## Sources
+Sources used to gather information about JSON Web Tokens:
+* [RFC 7519](https://tools.ietf.org/html/rfc7519)
+* [jwt.io](https://jwt.io/introduction)

@@ -145,13 +145,21 @@ Header header = jwt.getHeader();
 Payload payload = jwt.getPayload();
 
 // Get data from header and payload
-String alg = header.getAlgorithm(); // "HS512"
-String typ = header.getType(); // "JWT"
+String alg = header.getAlgorithm();
+String typ = header.getType();
+String cty = header.getContentType();
 
-String iss = payload.getIssuer(); // "issuer"
-String sub = payload.getSubject(); // "subject"
-String[] audience = payload.getAudience(); // ["aud1", "aud2"]
-Object customClaim = payload.get("username"); // "BastiaanJansen"
+String iss = payload.getIssuer();
+String sub = payload.getSubject();
+String jti = payload.getID();
+Date iat = payload.getIssuedAt();
+Date exp = payload.getExpirationTime();
+Date nbf = payload.getNotBefore();
+String[] audience = payload.getAudience();
+
+Object customClaim = payload.get("username");
+
+boolean hasClaim = payload.containsKey("key");
 ```
 
 ### Validating JWT's

@@ -44,7 +44,7 @@ The header holds information about the JWT. It typically consists of two parts: 
 
 ### Payload
 
-The second part of the token is the payload, which contains the claims. Claims are statements about an entity and additional data. Reserved claims are called registred claims. There are seven registred claims:
+The second part of the token is the payload, which contains the claims. Claims are statements about an entity and additional data. Reserved claims are called registered claims. There are seven registered claims:
 * `iss`: Issuer, identifies the principal that issued the JWT
 * `sub`: Subject, identifies the principal that is the subject of the JWT
 * `aud`: Audience, identifies the principal that is the audience of the JWT

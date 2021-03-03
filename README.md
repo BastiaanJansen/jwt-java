@@ -176,11 +176,11 @@ try {
   e.printStackTrace(); // JWT is not valid, handle error
 }
 ```
-The `validate()` method uses the `DefaultJWTValidator` class underneath. Which, by default, makes sure:
+The `validate()` method uses the `DefaultJWTValidator` class underneath. Which, by default, enforces:
 * the type (typ) in header is set to "JWT"
+* the signature is valid
 * when set, the expiration time is not exceeded,
 * when set, the not-before time is not after or equal current time,
-* the signature is valid
 
 #### Custom validation
 

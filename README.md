@@ -5,7 +5,27 @@
 ![](https://img.shields.io/github/license/BastiaanJansen/JWT-Java)
 ![](https://img.shields.io/github/issues/BastiaanJansen/JWT-Java)
 
-JSON Web Token library for Java according to RFC 7519.
+JSON Web Token library for Java according to [RFC 7519](https://tools.ietf.org/html/rfc7519).
+
+## Table of Contents
+
+* [What are JSON Web Tokens?](#what-are-json-web-tokens)
+    * [Header](#header)
+    * [Payload](#payload)
+    * [Signature](#signature)
+* [Features](#features)
+    * [Supported algorithms](#supported-algorithms)
+* [Installation](#installation)
+* [Usage](#usage)
+    * [Choose algorithm](#choose-algorithm)
+        * [Secrets](#secrets)
+    * [Creating JWT's](#creating-jwts)
+    * [Parsing JWT's](#parsing-jwts)
+    * [Validating JWT's](#validating-jwts)
+        * [Basic validation](#basic-validation)
+        * [Custom validation](#custom-validation)
+        * [Create your own validator](#create-your-own-validator)
+* [Sources](#sources) 
 
 ## What are JSON Web Tokens?
 
@@ -37,21 +57,23 @@ The second part of the token is the payload, which contains the claims. Claims a
 
 To create the signature part you have to take the Base64URL encoded header, the Base64URL encoded payload, a secret, the algorithm specified in the header, and sign that.
 
-### Features
+## Features
 
 * Creating JSON Web Tokens
-* Validating JSON Web Tokens
-* Easy to learn API
-* Fluent interfaces 
+* Powerful JWT validation options
+* Self explanatory and easy to learn API
+* Fluent interfaces
 
-#### Supported algorithms
+### Supported algorithms
 
-|      | SHA256             | SHA256             | SHA512             |
+|      | SHA256             | SHA384             | SHA512             |
 |------|:------------------:|:------------------:|:------------------:|
 | HMAC | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark:	|
 | RSA  | :heavy_check_mark:	| :heavy_check_mark: | :heavy_check_mark:	|	
 
 ## Installation
+
+Coming Soon
 
 ## Usage
 
@@ -61,7 +83,24 @@ To generate a JSON Web Token, you can use the fluent-interface builder API. But 
 ```java
 Algorithm algorithm = Algorithm.HMAC512("secret");
 ```
-Of course, your secret should be much longer. When using HMAC512, the secret must be 512 bits. When using HMAC256, the secret must be 256 bits. Etcetera.
+
+Or use another algorithm:
+```java
+KeyPair keyPair = // Get key pair
+Algorithm algorithm = Algorithm.RSA512(keyPair);
+```
+
+For a list of available algorithms: [Supported algorithms](#supported-algorithms)
+
+#### Secrets
+
+##### HMAC-SHA
+* `HS256` secret key must be at least 256 bits (or 32 bytes) long
+* `HS384` secret key must be at least 384 bits (or 48 bytes) long
+* `HS512` secret key must be at least 512 bits (or 64 bytes) long
+
+##### RSA
+All RSA algorithms require a secret which is at least 2048 bits (or 256 bytes) long.
 
 ### Creating JWT's
 
@@ -70,16 +109,17 @@ When you have chosen an algorithm, you can use the JWT Builder to define how the
 
 try {
   String jwt = new JWT.Builder(algorithm)
-  .withIssuer("issuer")
-  .withAudience("aud1", "aud2")
-  .withIssuedAt(new Date())
-  .withID("id")
-  .withClaim("username", "BastiaanJansen") // add custom claims
-  .sign();
+    .withIssuer("issuer")
+    .withAudience("aud1", "aud2")
+    .withIssuedAt(new Date())
+    .withID("id")
+    .withClaim("username", "BastiaanJansen") // add custom claims
+    .sign();
 } catch (JWTCreationException e) {
   e.printStackTrace(); // Handle error
 }
 ```
+> Signed JWT's automatically have the `typ` header claim set to "JWT"
 
 You can also define the header and payload before hand and add them without the JWT Builder:
 ```java
@@ -131,9 +171,7 @@ String rawJWT = "eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJpc3N1ZXIiLCJzdW
 Algorithm algorithm = Algorithm.HMAC512(secret);
 
 try {
-
   JWT jwt = JWT.fromRawJWT(algorithm, jwt);
-  
 } catch (JWTCreationException | JWTDecodeException e) {
   e.printStackTrace(); // Handle error
 }
@@ -145,13 +183,21 @@ Header header = jwt.getHeader();
 Payload payload = jwt.getPayload();
 
 // Get data from header and payload
-String alg = header.getAlgorithm(); // "HS512"
-String typ = header.getType(); // "JWT"
+String alg = header.getAlgorithm();
+String typ = header.getType();
+String cty = header.getContentType();
 
-String iss = payload.getIssuer(); // "issuer"
-String sub = payload.getSubject(); // "subject"
-String[] audience = payload.getAudience(); // ["aud1", "aud2"]
-Object customClaim = payload.get("username"); // "BastiaanJansen"
+String iss = payload.getIssuer();
+String sub = payload.getSubject();
+String jti = payload.getID();
+Date iat = payload.getIssuedAt();
+Date exp = payload.getExpirationTime();
+Date nbf = payload.getNotBefore();
+String[] audience = payload.getAudience();
+
+Object customClaim = payload.get("username");
+
+boolean hasClaim = payload.containsKey("key");
 ```
 
 ### Validating JWT's
@@ -163,20 +209,18 @@ To validate a JWT, you can use a `JWTValidator`. To validate a token in it's mos
 JWT jwt = JWT.fromRawJWT(algorithm, "eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJpc3N1ZXIiLCJzdWIiOiJzdWJqZWN0IiwianRpIjoiaWQiLCJhdWRpZW5jZSI6WyJhdWQxIiwiYXVkMiJdLCJ1c2VybmFtZSI6IkJhc3RpYWFuSmFuc2VuIn0.mu1sSfzaNKH1dJ-cC1bsrFEJiwZs7H0AhnFf5tR4D0062zsxpU90F3dMrSlbneTtrxVI3PGxJlCYN8kcfpJkpw");
 
 try {
-  
   jwt.validate();
   
   // JWT is valid!
-  
 } catch (JWTValidationException e) {
   e.printStackTrace(); // JWT is not valid, handle error
 }
 ```
-The `validate()` method uses the `DefaultJWTValidator` class underneath. Which, by default, makes sure:
+The `validate()` method uses the `DefaultJWTValidator` class underneath. Which, by default, enforces:
 * the type (typ) in header is set to "JWT"
+* the signature is valid
 * when set, the expiration time is not exceeded,
 * when set, the not-before time is not after or equal current time,
-* the signature is valid
 
 #### Custom validation
 
@@ -187,11 +231,11 @@ JWTValidator validator = new DefaultJWTValidator.Builder()
   .withAlgorithm("HS512") // Enforce the alg in the header is set to HS512
   .withIssuer("issuer")
   .withID("id")
-  .withCLaim("username", "BastiaanJansen")
+  .withOneOfAudience("aud1", "aud2") // Enforce audience has "aud1" or "aud2"
+  .withCLaim("username", "BastiaanJansen") // Enforce custom claim value
   .build();
 
 try {
-  
   // Give the verifier as argument
   jwt.validate(validator);
   
@@ -199,10 +243,26 @@ try {
   verifier.validate(jwt);
   
   // JWT is valid!
-  
 } catch (JWTValidationException e) {
   e.printStackTrace(); // JWT is not valid, handle error
 }
+```
+
+Or add custom validation logic:
+```java
+JWTValidator validator = new DefaultJWTValidator.Builder()
+  .withClaim("username", new ClaimValidator() {
+      @Override
+      public boolean validate(Object value) {
+          return "bastiaanjansen".equalsIgnoreCase(String.valueOf(value));
+      }
+  })
+  .build();
+  
+// Or use a lambda
+JWTValidator validator = new DefaultJWTValidator.Builder()
+  .withClaim("username", value -> "bastiaanjansen".equalsIgnoreCase(String.valueOf(value)))
+  .build()
 ```
 
 #### Create your own validator
@@ -225,7 +285,6 @@ You can use your custom validator the same way as the `DefaultJWTValidator`:
 
 ```java
 try {
-
   JWTValidator customValidator = new CustomJWTValidator();
   
   // Give the verifier as argument
@@ -235,7 +294,6 @@ try {
   customValidator.validate(jwt);
   
   // JWT is valid!
-  
 } catch (JWTValidationException e) {
   e.printStackTrace(); // JWT is not valid, handle error
 }

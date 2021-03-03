@@ -91,12 +91,12 @@ When you have chosen an algorithm, you can use the JWT Builder to define how the
 
 try {
   String jwt = new JWT.Builder(algorithm)
-  .withIssuer("issuer")
-  .withAudience("aud1", "aud2")
-  .withIssuedAt(new Date())
-  .withID("id")
-  .withClaim("username", "BastiaanJansen") // add custom claims
-  .sign();
+    .withIssuer("issuer")
+    .withAudience("aud1", "aud2")
+    .withIssuedAt(new Date())
+    .withID("id")
+    .withClaim("username", "BastiaanJansen") // add custom claims
+    .sign();
 } catch (JWTCreationException e) {
   e.printStackTrace(); // Handle error
 }

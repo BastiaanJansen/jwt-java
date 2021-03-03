@@ -52,6 +52,9 @@ public class DefaultJWTValidator implements JWTValidator {
             if (!map.containsKey(key))
                 throw new JWTValidationException(key + " is not present in payload");
 
+            if (map.get(key) == null)
+                throw new JWTValidationException(key + " is null");
+
             if (!validator.validate(map.get(key)))
                 throw new JWTValidationException(key + " does not conform to constraint");
         }

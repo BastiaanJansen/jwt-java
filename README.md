@@ -40,7 +40,9 @@ A JWT has therefore the following structure: `xxxxx.yyyyy.zzzzz`
 
 ### Header
 
-The header holds information about the JWT. It typically consists of two parts: the type of the token, which is JWT, and the signing algorithm being used, such as HMAC SHA256 or RSA.
+The header holds information about the JWT. It typically consists of two parts: the type of the token, which is JWT, and the signing algorithm being used, such as HMAC SHA256 or RSA. There are two registered header parameters:
+* `typ`: Type, is used by JWT applications to declare the media type of this complete JWT
+* `cty`: Content Type, is used by this specification to convey structural information about the JWT
 
 ### Payload
 

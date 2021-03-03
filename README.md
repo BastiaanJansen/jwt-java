@@ -7,6 +7,25 @@
 
 JSON Web Token library for Java according to [RFC 7519](https://tools.ietf.org/html/rfc7519).
 
+## Table of Contents
+
+* [What are JSON Web Tokens?](#what-are-json-web-tokens)
+    * [Header](#header)
+    * [Payload](#payload)
+    * [Signature](#signature)
+* [Features](#features)
+    * [Supported algorithms](#supported-algorithms)
+* [Installation](#installation)
+* [Usage](#usage)
+    * [Choose algorithm](#choose-algorithm)
+    * [Creating JWT's](#creating-jwts)
+    * [Parsing JWT's](#parsing-jwts)
+    * [Validating JWT's](#validating-jwts)
+        * [Basic validation](#basic-validation)
+        * [Custom validation](#custom-validation)
+        * [Create your own validator](#create-your-own-validator)
+* [Sources](#sources) 
+
 ## What are JSON Web Tokens?
 
 JSON Web Token (JWT) is an open standard (RFC 7519) that defines a compact and self-contained way for securely transmitting information between parties as a JSON object. This information can be verified and trusted because it is digitally signed. JWTs can be signed using a secret (with the HMAC algorithm) or a public / private key pair using RSA or ECDSA.
@@ -37,14 +56,14 @@ The second part of the token is the payload, which contains the claims. Claims a
 
 To create the signature part you have to take the Base64URL encoded header, the Base64URL encoded payload, a secret, the algorithm specified in the header, and sign that.
 
-### Features
+## Features
 
 * Creating JSON Web Tokens
 * Powerful JWT validation options
 * Self explanatory and easy to learn API
 * Fluent interfaces
 
-#### Supported algorithms
+### Supported algorithms
 
 |      | SHA256             | SHA256             | SHA512             |
 |------|:------------------:|:------------------:|:------------------:|

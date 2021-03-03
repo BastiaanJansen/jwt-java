@@ -18,6 +18,7 @@ JSON Web Token library for Java according to [RFC 7519](https://tools.ietf.org/h
 * [Installation](#installation)
 * [Usage](#usage)
     * [Choose algorithm](#choose-algorithm)
+        * [Secrets](#secrets)
     * [Creating JWT's](#creating-jwts)
     * [Parsing JWT's](#parsing-jwts)
     * [Validating JWT's](#validating-jwts)
@@ -65,7 +66,7 @@ To create the signature part you have to take the Base64URL encoded header, the 
 
 ### Supported algorithms
 
-|      | SHA256             | SHA256             | SHA512             |
+|      | SHA256             | SHA384             | SHA512             |
 |------|:------------------:|:------------------:|:------------------:|
 | HMAC | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark:	|
 | RSA  | :heavy_check_mark:	| :heavy_check_mark: | :heavy_check_mark:	|	
@@ -82,7 +83,24 @@ To generate a JSON Web Token, you can use the fluent-interface builder API. But 
 ```java
 Algorithm algorithm = Algorithm.HMAC512("secret");
 ```
-Of course, your secret should be much longer. When using HMAC512, the secret must be 512 bits. When using HMAC256, the secret must be 256 bits. Etcetera.
+
+Or use another algorithm:
+```java
+KeyPair keyPair = // Get key pair
+Algorithm algorithm = Algorithm.RSA512(keyPair);
+```
+
+For a list of available algorithms: [Supported algorithms](#supported-algorithms)
+
+#### Secrets
+
+##### HMAC-SHA
+* `HS256` secret key must be at least 256 bits (or 32 bytes) long
+* `HS384` secret key must be at least 384 bits (or 48 bytes) long
+* `HS512` secret key must be at least 512 bits (or 64 bytes) long
+
+##### RSA
+All RSA algorithms require a secret which is at least 2048 bits (or 256 bytes) long.
 
 ### Creating JWT's
 

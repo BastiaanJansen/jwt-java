@@ -2,11 +2,9 @@ package com.bastiaanjansen.jwt.Algorithms;
 
 import com.bastiaanjansen.jwt.Exceptions.JWTSignException;
 import com.bastiaanjansen.jwt.Exceptions.JWTValidationException;
-import com.bastiaanjansen.jwt.JWT;
 
 import java.nio.charset.StandardCharsets;
 import java.security.*;
-import java.util.Base64;
 
 public class RSAAlgorithm extends Algorithm {
 

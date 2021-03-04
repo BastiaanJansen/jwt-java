@@ -65,6 +65,9 @@ public class JWT {
             Payload payload = new Payload(new JSONObject(Base64Utils.decodeBase64URL(segments[1])).toMap());
             String signature = segments[2];
 
+            if (!header.getAlgorithm().equals(algorithm.getName()))
+                throw new JWTCreationException("Algorithm defined in header does not match " + algorithm.getName());
+
             return new JWT(algorithm, header, payload, signature);
         } catch(IllegalArgumentException e) {
             throw new JWTDecodeException("Error decoding JWT");

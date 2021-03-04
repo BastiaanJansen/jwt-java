@@ -44,9 +44,9 @@ class HMACAlgorithmTest {
 
     @Test
     void verify() {
-//        assertDoesNotThrow(() -> {
-//            boolean isValid = algorithm.verify("data".getBytes(StandardCharsets.UTF_8), "zbOa_v86tCj1m7nx3ZGDEq6urhQ4ROmcKbXcbQjK-U8");
-//            assertTrue(isValid);
-//        });
+        assertDoesNotThrow(() -> {
+            boolean isValid = algorithm.verify("data".getBytes(StandardCharsets.UTF_8), Base64.getUrlDecoder().decode("zbOa_v86tCj1m7nx3ZGDEq6urhQ4ROmcKbXcbQjK-U8"));
+            assertTrue(isValid);
+        });
     }
 }

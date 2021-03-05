@@ -26,7 +26,6 @@
         <connection>scm:git:https://github.com/BastiaanJansen/JWT-Java.git</connection>
         <url>http://github.com/BastiaanJansen/JWT-Java</url>
         <developerConnection>scm:git:https://github.com/BastiaanJansen/JWT-Java.git</developerConnection>
-      <tag>jwt-java-1.0</tag>
     </scm>
 
     <developers>

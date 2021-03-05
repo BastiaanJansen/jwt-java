@@ -27,7 +27,14 @@
         <url>http://github.com/BastiaanJansen/JWT-Java</url>
         <developerConnection>scm:git:https://github.com/BastiaanJansen/JWT-Java.git</developerConnection>
       <tag>jwt-java-1.0</tag>
-  </scm>
+    </scm>
+
+    <developers>
+        <developer>
+            <id>BastiaanJansen</id>
+            <name>Bastiaan Jansen</name>
+        </developer>
+    </developers>
 
     <dependencies>
         <dependency>

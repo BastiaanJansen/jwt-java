@@ -43,6 +43,8 @@ public class Header extends HashMap<String, Object> {
 
     public String getAlgorithm() {
         Object algorithm = get(Registered.ALGORITHM);
+        
+
         return getString(algorithm);
     }
 

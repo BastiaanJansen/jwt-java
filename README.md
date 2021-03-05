@@ -75,7 +75,19 @@ To create the signature part you have to take the Base64URL encoded header, the 
 
 ## Installation
 
-Coming Soon
+### Maven
+```xml
+<dependency>
+    <groupId>com.github.bastiaanjansen</groupId>
+    <artifactId>jwt-java</artifactId>
+    <version>1.0</version>
+</dependency>
+```
+
+### Gradle
+```gradle
+implementation 'com.github.bastiaanjansen:jwt-java:1.0'
+```
 
 ## Usage
 

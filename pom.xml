@@ -4,7 +4,7 @@
 
     <groupId>com.github.bastiaanjansen</groupId>
     <artifactId>jwt-java</artifactId>
-    <version>1.1-SNAPSHOT</version>
+    <version>1.0-SNAPSHOT</version>
 
     <name>JWT-Java</name>
     <description>JSON Web Token implementation for Java according to RFC 7519. Easily create, parse and validate JSON Web Tokens using a fluent API.</description>

@@ -317,3 +317,5 @@ try {
 Sources used to gather information about JSON Web Tokens:
 * [RFC 7519](https://tools.ietf.org/html/rfc7519)
 * [jwt.io](https://jwt.io/introduction)
+
+[![Stargazers repo roster for @BastiaanJansen/OTP-Java](https://reporoster.com/stars/BastiaanJansen/JWT-Java)](https://github.com/BastiaanJansen/JWT-Java/stargazers)

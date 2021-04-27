@@ -69,7 +69,7 @@ public class JWT {
                 throw new JWTCreationException("Algorithm defined in header does not match " + algorithm.getName());
 
             return new JWT(algorithm, header, payload, signature);
-        } catch(IllegalArgumentException e) {
+        } catch (IllegalArgumentException e) {
             throw new JWTDecodeException("Error decoding JWT");
         } catch (JSONException e) {
             throw new JWTCreationException("JSON is not valid");

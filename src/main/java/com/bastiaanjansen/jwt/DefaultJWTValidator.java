@@ -2,8 +2,6 @@ package com.bastiaanjansen.jwt;
 
 import com.bastiaanjansen.jwt.Exceptions.JWTExpiredException;
 import com.bastiaanjansen.jwt.Exceptions.JWTValidationException;
-import com.bastiaanjansen.jwt.Utils.Base64Utils;
-import org.json.JSONObject;
 
 import java.nio.charset.StandardCharsets;
 import java.util.*;
@@ -31,16 +29,16 @@ public class DefaultJWTValidator implements JWTValidator {
     @Override
     public void validate(JWT jwt) throws JWTValidationException {
         validateAlgorithm(jwt);
-        verifyValidators(jwt.getHeader(), headerValidators);
+        verifyValidators(jwt.getHeader().getAsMap(), headerValidators);
         verifyPayload(jwt.getPayload());
     }
 
     private void validateAlgorithm(JWT jwt) throws JWTValidationException {
-        String encodedHeaders = Base64Utils.encodeBase64URL(new JSONObject(jwt.getHeader()).toString());
-        String encodedPayload = Base64Utils.encodeBase64URL(new JSONObject(jwt.getPayload()).toString());
+        String concatenated = String.format("%s.%s", jwt.getHeader().base64Encoded(), jwt.getPayload().base64Encoded());
 
-        String concatenated = encodedHeaders + "." + encodedPayload;
-        if (!jwt.getAlgorithm().verify(concatenated.getBytes(StandardCharsets.UTF_8), Base64.getUrlDecoder().decode(jwt.getSignature())))
+        byte[] concatenatedBytes = concatenated.getBytes(StandardCharsets.UTF_8);
+
+        if (!jwt.getAlgorithm().verify(concatenatedBytes, Base64.getUrlDecoder().decode(jwt.getSignature())))
             throw new JWTValidationException("Signature is not valid");
     }
 
@@ -63,20 +61,26 @@ public class DefaultJWTValidator implements JWTValidator {
     private void verifyPayload(Payload payload) throws JWTValidationException {
         Date currentDate = new Date();
 
-        if (payload.containsKey(Payload.Registered.EXPIRATION_TIME)) {
-            Date expirationTime = payload.getExpirationTime();
-            if (currentDate.getTime() > expirationTime.getTime())
-                throw new JWTExpiredException("JWT expired on " + expirationTime);
-        }
+        validateExpirationTime(payload, currentDate);
+        validateNotBefore(payload, currentDate);
+        verifyValidators(payload.getAsMap(), payloadValidators);
+    }
 
+    private void validateNotBefore(Payload payload, Date currentDate) throws JWTValidationException {
         // Checks that if the not-before (nbf) claim is set, the current date is after or equal to the not-before date.
-        if (payload.containsKey(Payload.Registered.NOT_BEFORE)) {
+        if (payload.containsClaim(Payload.Registered.NOT_BEFORE)) {
             Date notBefore = payload.getNotBefore();
             if (currentDate.getTime() <= notBefore.getTime())
                 throw new JWTValidationException("JWT is only valid after " + notBefore);
         }
+    }
 
-        verifyValidators(payload, payloadValidators);
+    private void validateExpirationTime(Payload payload, Date currentDate) throws JWTExpiredException {
+        if (payload.containsClaim(Payload.Registered.EXPIRATION_TIME)) {
+            Date expirationTime = payload.getExpirationTime();
+            if (currentDate.getTime() > expirationTime.getTime())
+                throw new JWTExpiredException("JWT expired on " + expirationTime);
+        }
     }
 
     public static class Builder {
@@ -129,13 +133,28 @@ public class DefaultJWTValidator implements JWTValidator {
             return this;
         }
 
+        public Builder withExpirationTime(long timeSinceEpoch) {
+            withClaim(Payload.Registered.EXPIRATION_TIME, value -> value.equals(timeSinceEpoch));
+            return this;
+        }
+
         public Builder withNotBefore(Date notBefore) {
             withClaim(Payload.Registered.NOT_BEFORE, value -> value.equals(notBefore.getTime()));
             return this;
         }
 
+        public Builder withNotBefore(long timeSinceEpoch) {
+            withClaim(Payload.Registered.NOT_BEFORE, value -> value.equals(timeSinceEpoch));
+            return this;
+        }
+
         public Builder withIssuedAt(Date issuedAt) {
             withClaim(Payload.Registered.ISSUED_AT, value -> value.equals(issuedAt.getTime()));
+            return this;
+        }
+
+        public Builder withIssuedAt(long timeSinceEpoch) {
+            withClaim(Payload.Registered.ISSUED_AT, value -> value.equals(timeSinceEpoch));
             return this;
         }
 

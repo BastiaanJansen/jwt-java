@@ -197,7 +197,7 @@ String[] audience = payload.getAudience();
 
 Object customClaim = payload.get("username");
 
-boolean hasClaim = payload.containsKey("key");
+boolean hasClaim = payload.containsClaim("key");
 ```
 
 ### Validating JWT's

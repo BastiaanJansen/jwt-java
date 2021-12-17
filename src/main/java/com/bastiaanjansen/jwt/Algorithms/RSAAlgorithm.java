@@ -26,6 +26,7 @@ public class RSAAlgorithm extends Algorithm {
             final Signature signature = Signature.getInstance(description);
             signature.initSign(keyPair.getPrivate());
             signature.update(data);
+
             return signature.sign();
         } catch (NoSuchAlgorithmException | InvalidKeyException | SignatureException e) {
             throw new JWTSignException(e.getMessage());

@@ -28,8 +28,10 @@ public class Payload {
         claims = new HashMap<>(map);
     }
 
-    public static Payload fromJSON(String json) {
-        return new Payload(new JSONObject(Base64Utils.decodeBase64URL(json)).toMap());
+    public static Payload fromBase64EncodedJSON(String encodedJSON) {
+        String decodedJSON = Base64Utils.decodeBase64URL(encodedJSON);
+        Map<String, Object> map = new JSONObject(decodedJSON).toMap();
+        return new Payload(map);
     }
 
     public void setIssuer(String issuer) {

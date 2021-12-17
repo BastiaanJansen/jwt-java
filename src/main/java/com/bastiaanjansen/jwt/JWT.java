@@ -11,7 +11,6 @@ import com.bastiaanjansen.jwt.Exceptions.JWTValidationException;
 import com.bastiaanjansen.jwt.Exceptions.JWTSignException;
 import com.bastiaanjansen.jwt.Utils.Base64Utils;
 import org.json.JSONException;
-import org.json.JSONObject;
 
 /**
  * This object represents a JSON Web Token
@@ -79,8 +78,8 @@ public class JWT {
             throw new JWTDecodeException("The number of segments must be " + NUMBER_OF_SEGMENTS);
 
         try {
-            Header header = Header.fromJSON(segments[0]);
-            Payload payload = Payload.fromJSON(segments[1]);
+            Header header = Header.fromBase64EncodedJSON(segments[0]);
+            Payload payload = Payload.fromBase64EncodedJSON(segments[1]);
             String signature = segments[2];
 
             if (!header.getAlgorithm().equals(algorithm.getName()))

@@ -25,8 +25,10 @@ public class Header {
         claims.putAll(map);
     }
 
-    public static Header fromJSON(String json) {
-        return new Header(new JSONObject(Base64Utils.decodeBase64URL(json)).toMap());
+    public static Header fromBase64EncodedJSON(String encodedJSON) {
+        String decodedJSON = Base64Utils.decodeBase64URL(encodedJSON);
+        Map<String, Object> map = new JSONObject(decodedJSON).toMap();
+        return new Header(map);
     }
 
     public void setType(String type) {

@@ -40,11 +40,13 @@ A JWT has therefore the following structure: `xxxxx.yyyyy.zzzzz`
 
 ### Header
 
-The header holds information about the JWT. It typically consists of two parts: the type of the token, which is JWT, and the signing algorithm being used, such as HMAC SHA256 or RSA.
+The header holds information about the JWT. It typically consists of two parts: the type of the token, which is JWT, and the signing algorithm being used, such as HMAC SHA256 or RSA. There are two registered header parameters:
+* `typ`: Type, is used by JWT applications to declare the media type of this complete JWT
+* `cty`: Content Type, is used by this specification to convey structural information about the JWT
 
 ### Payload
 
-The second part of the token is the payload, which contains the claims. Claims are statements about an entity and additional data. Reserved claims are called registred claims. There are seven registred claims:
+The second part of the token is the payload, which contains the claims. Claims are statements about an entity and additional data. Reserved claims are called registered claims. There are seven registered claims:
 * `iss`: Issuer, identifies the principal that issued the JWT
 * `sub`: Subject, identifies the principal that is the subject of the JWT
 * `aud`: Audience, identifies the principal that is the audience of the JWT
@@ -73,7 +75,19 @@ To create the signature part you have to take the Base64URL encoded header, the 
 
 ## Installation
 
-Coming Soon
+### Maven
+```xml
+<dependency>
+    <groupId>com.github.bastiaanjansen</groupId>
+    <artifactId>jwt-java</artifactId>
+    <version>1.1</version>
+</dependency>
+```
+
+### Gradle
+```gradle
+implementation 'com.github.bastiaanjansen:jwt-java:1.1'
+```
 
 ## Usage
 
@@ -303,3 +317,5 @@ try {
 Sources used to gather information about JSON Web Tokens:
 * [RFC 7519](https://tools.ietf.org/html/rfc7519)
 * [jwt.io](https://jwt.io/introduction)
+
+[![Stargazers repo roster for @BastiaanJansen/OTP-Java](https://reporoster.com/stars/BastiaanJansen/JWT-Java)](https://github.com/BastiaanJansen/JWT-Java/stargazers)

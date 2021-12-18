@@ -79,13 +79,13 @@ To create the signature part you have to take the Base64URL encoded header, the 
 <dependency>
     <groupId>com.github.bastiaanjansen</groupId>
     <artifactId>jwt-java</artifactId>
-    <version>1.1</version>
+    <version>1.1.0</version>
 </dependency>
 ```
 
 ### Gradle
 ```gradle
-implementation 'com.github.bastiaanjansen:jwt-java:1.1'
+implementation 'com.github.bastiaanjansen:jwt-java:1.1.0'
 ```
 
 ## Usage

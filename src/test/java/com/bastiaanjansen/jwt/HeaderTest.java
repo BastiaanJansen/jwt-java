@@ -7,6 +7,8 @@ import org.junit.jupiter.api.Test;
 import java.util.HashMap;
 import java.util.Map;
 
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
 class HeaderTest {
@@ -24,56 +26,72 @@ class HeaderTest {
     }
 
     @Test
-    void typeIsByDefaultJWT() {
-        assertTrue(header.containsKey(Header.Registered.TYPE));
-        assertEquals(header.getType(), "JWT");
+    void constructor_typeIsByDefaultJWT() {
+        String expected = "JWT";
+
+        assertThat(header.getType(), is(expected));
     }
 
     @Test
-    void createHeaderWithMap() {
+    void constructorWithMap_getType() {
         Map<String, Object> map = new HashMap<>();
         map.put(Header.Registered.TYPE, "type");
         map.put(Header.Registered.ALGORITHM, "HS512");
+        String expected = "type";
+
         header = new Header(map);
-        assertTrue(header.containsKey(Header.Registered.TYPE));
-        assertTrue(header.containsKey(Header.Registered.ALGORITHM));
-        assertEquals(header.getType(), "type");
-        assertEquals(header.getAlgorithm(), "HS512");
+
+        assertThat(header.getType(), is(expected));
+    }
+
+    @Test
+    void constructorWithMap_getAlgorithm() {
+        Map<String, Object> map = new HashMap<>();
+        map.put(Header.Registered.TYPE, "type");
+        map.put(Header.Registered.ALGORITHM, "HS512");
+        String expected = "HS512";
+
+        header = new Header(map);
+
+        assertThat(header.getAlgorithm(), is(expected));
     }
 
     @Test
     void setType() {
         header.setType("type");
-        assertTrue(header.containsKey(Header.Registered.TYPE));
-    }
+        String expected = "type";
 
-    @Test
-    void getType() {
-        header.setType("type");
-        assertEquals(header.getType(), "type");
+        assertThat(header.getType(), is(expected));
     }
 
     @Test
     void setContentType() {
-        header.setContentType("contentType");
-        assertTrue(header.containsKey(Header.Registered.CONTENT_TYPE));
-    }
+        header.setContentType("content-type");
+        String expected = "content-type";
 
-    @Test
-    void getContentType() {
-        header.setContentType("contentType");
-        assertEquals(header.getContentType(), "contentType");
+        assertThat(header.getContentType(), is(expected));
     }
 
     @Test
     void setAlgorithm() {
         header.setAlgorithm("algorithm");
-        assertTrue(header.containsKey(Header.Registered.ALGORITHM));
+        String expected = "algorithm";
+
+        assertThat(header.getAlgorithm(), is(expected));
     }
 
     @Test
-    void getAlgorithm() {
-        header.setAlgorithm("algorithm");
-        assertEquals(header.getAlgorithm(), "algorithm");
+    void base64EncodedWithDefaultHeader() {
+        String expected = "eyJ0eXAiOiJKV1QifQ";
+
+        assertThat(header.base64Encoded(), is(expected));
+    }
+
+    @Test
+    void base64EncodedWithType() {
+        header.setType("type");
+        String expected = "eyJ0eXAiOiJ0eXBlIn0";
+
+        assertThat(header.base64Encoded(), is(expected));
     }
 }

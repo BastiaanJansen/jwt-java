@@ -1,7 +1,6 @@
 # JWT-Java
 
-![](https://github./BastiaanJansen/JWT-Java/workflows/Build/badge.svg)
-![](https://github.com/BastiaanJansen/JWT-Java/workflows/Test/badge.svg)
+[![Build & Test](https://github.com/BastiaanJansen/jwt-java/actions/workflows/build.yml/badge.svg)](https://github.com/BastiaanJansen/jwt-java/actions/workflows/build.yml)
 ![](https://img.shields.io/github/license/BastiaanJansen/JWT-Java)
 ![](https://img.shields.io/github/issues/BastiaanJansen/JWT-Java)
 
@@ -80,13 +79,13 @@ To create the signature part you have to take the Base64URL encoded header, the 
 <dependency>
     <groupId>com.github.bastiaanjansen</groupId>
     <artifactId>jwt-java</artifactId>
-    <version>1.0</version>
+    <version>1.1</version>
 </dependency>
 ```
 
 ### Gradle
 ```gradle
-implementation 'com.github.bastiaanjansen:jwt-java:1.0'
+implementation 'com.github.bastiaanjansen:jwt-java:1.1'
 ```
 
 ## Usage
@@ -211,7 +210,7 @@ String[] audience = payload.getAudience();
 
 Object customClaim = payload.get("username");
 
-boolean hasClaim = payload.containsKey("key");
+boolean hasClaim = payload.containsClaim("key");
 ```
 
 ### Validating JWT's

@@ -1,11 +1,13 @@
 package com.bastiaanjansen.jwt;
 
-import java.util.Arrays;
+import com.bastiaanjansen.jwt.Utils.Base64Utils;
+import org.json.JSONObject;
+
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-public class Payload extends HashMap<String, Object> {
+public class Payload {
     public static class Registered {
         static String ISSUER = "iss";
         static String SUBJECT = "sub";
@@ -16,41 +18,55 @@ public class Payload extends HashMap<String, Object> {
         static String JWT_ID = "jti";
     }
 
-    public Payload() {}
+    private final Map<String, Object> claims;
+
+    public Payload() {
+        claims = new HashMap<>();
+    }
 
     public Payload(Map<String, Object> map) {
-        putAll(map);
+        claims = new HashMap<>(map);
+    }
+
+    public static Payload fromBase64EncodedJSON(String encodedJSON) {
+        String decodedJSON = Base64Utils.decodeBase64URL(encodedJSON);
+        Map<String, Object> map = new JSONObject(decodedJSON).toMap();
+        return new Payload(map);
     }
 
     public void setIssuer(String issuer) {
-        set(Registered.ISSUER, issuer);
+        addClaim(Registered.ISSUER, issuer);
     }
 
     public String getIssuer() {
-        Object issuer = get(Registered.ISSUER);
+        Object issuer = claims.get(Registered.ISSUER);
         return getString(issuer);
     }
 
     public void setSubject(String subject) {
-        set(Registered.SUBJECT, subject);
+        addClaim(Registered.SUBJECT, subject);
     }
 
     public String getSubject() {
-        Object subject = get(Registered.SUBJECT);
+        Object subject = claims.get(Registered.SUBJECT);
         return getString(subject);
     }
 
     public void setAudience(String... audience) {
-        set(Registered.AUDIENCE, audience);
+        addClaim(Registered.AUDIENCE, audience);
     }
 
     public String[] getAudience() {
-        Object[] audience = (Object[]) get(Registered.AUDIENCE);
+        Object audience = claims.get(Registered.AUDIENCE);
+
+        if (!(audience instanceof Object[]))
+            return new String[] {(String) audience};
+
         return (String[]) audience;
     }
 
     public void setExpirationTime(long timeSinceEpoch) {
-        set(Registered.EXPIRATION_TIME, timeSinceEpoch);
+        addClaim(Registered.EXPIRATION_TIME, timeSinceEpoch);
     }
 
     public void setExpirationTime(Date expirationTime) {
@@ -58,12 +74,12 @@ public class Payload extends HashMap<String, Object> {
     }
 
     public Date getExpirationTime() {
-        Object expirationDate = get(Registered.EXPIRATION_TIME);
+        Object expirationDate = claims.get(Registered.EXPIRATION_TIME);
         return getDate(expirationDate);
     }
 
     public void setNotBefore(long timeSinceEpoch) {
-        set(Registered.NOT_BEFORE, timeSinceEpoch);
+        addClaim(Registered.NOT_BEFORE, timeSinceEpoch);
     }
 
     public void setNotBefore(Date notBefore) {
@@ -71,12 +87,12 @@ public class Payload extends HashMap<String, Object> {
     }
 
     public Date getNotBefore() {
-        Object notBefore = get(Registered.NOT_BEFORE);
+        Object notBefore = claims.get(Registered.NOT_BEFORE);
         return getDate(notBefore);
     }
 
     public void setIssuedAt(long timeSinceEpoch) {
-        set(Registered.ISSUED_AT, timeSinceEpoch);
+        addClaim(Registered.ISSUED_AT, timeSinceEpoch);
     }
 
     public void setIssuedAt(Date issuedAt) {
@@ -84,23 +100,39 @@ public class Payload extends HashMap<String, Object> {
     }
 
     public Date getIssuedAt() {
-        Object issuedAt = get(Registered.ISSUED_AT);
+        Object issuedAt = claims.get(Registered.ISSUED_AT);
         return getDate(issuedAt);
     }
 
     public void setID(String id) {
-        set(Registered.JWT_ID, id);
+        addClaim(Registered.JWT_ID, id);
     }
 
     public String getID() {
-        Object id = get(Registered.JWT_ID);
+        Object id = claims.get(Registered.JWT_ID);
         return getString(id);
     }
 
-    private void set(String name, Object value) {
+    public boolean containsClaim(String name) {
+        return claims.containsKey(name);
+    }
+
+    public void addClaim(String name, Object value) {
         if (name == null) throw new IllegalArgumentException("name cannot be null");
         if (value == null) throw new IllegalArgumentException("value cannot be null");
-        put(name, value);
+        claims.put(name, value);
+    }
+
+    public Object get(String name) {
+        return claims.get(name);
+    }
+
+    public Map<String, Object> getAsMap() {
+        return new HashMap<>(claims);
+    }
+
+    public String base64Encoded() {
+        return Base64Utils.encodeBase64URL(new JSONObject(claims).toString());
     }
 
     private String getString(Object object) {

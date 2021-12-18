@@ -8,6 +8,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
 class PayloadTest {
@@ -25,119 +27,105 @@ class PayloadTest {
     }
 
     @Test
-    void createHeaderWithMap() {
+    void constructorWithMap_getID() {
         Map<String, Object> map = new HashMap<>();
         map.put(Payload.Registered.ISSUER, "issuer");
         map.put(Payload.Registered.JWT_ID, "id");
+        String expected = "id";
+
         payload = new Payload(map);
-        assertTrue(payload.containsKey(Payload.Registered.ISSUER));
-        assertTrue(payload.containsKey(Payload.Registered.JWT_ID));
-        assertEquals(payload.getIssuer(), "issuer");
-        assertEquals(payload.getID(), "id");
+
+        assertThat(payload.getID(), is(expected));
+    }
+
+    @Test
+    void constructorWithMap_getIssuer() {
+        Map<String, Object> map = new HashMap<>();
+        map.put(Payload.Registered.ISSUER, "issuer");
+        map.put(Payload.Registered.JWT_ID, "id");
+        String expected = "issuer";
+
+        payload = new Payload(map);
+
+        assertThat(payload.getIssuer(), is(expected));
     }
 
     @Test
     void setIssuer() {
         payload.setIssuer("issuer");
-        assertTrue(payload.containsKey(Payload.Registered.ISSUER));
-    }
+        String expected = "issuer";
 
-    @Test
-    void getIssuer() {
-        payload.setIssuer("issuer");
-        assertEquals(payload.getIssuer(), "issuer");
+        assertThat(payload.getIssuer(), is(expected));
     }
 
     @Test
     void setSubject() {
         payload.setSubject("subject");
-        assertTrue(payload.containsKey(Payload.Registered.SUBJECT));
-    }
+        String expected = "subject";
 
-    @Test
-    void getSubject() {
-        payload.setSubject("subject");
-        assertEquals(payload.getSubject(), "subject");
+        assertThat(payload.getSubject(), is(expected));
     }
 
     @Test
     void setAudience() {
         payload.setAudience("audience");
-        assertTrue(payload.containsKey(Payload.Registered.AUDIENCE));
-    }
+        String[] expected = { "audience" };
 
-    @Test
-    void getAudience() {
-        payload.setAudience("audience");
-        assertArrayEquals(payload.getAudience(), new String[]{ "audience" });
+        assertThat(payload.getAudience(), is(expected));
     }
 
     @Test
     void setExpirationTime() {
-        payload.setExpirationTime(new Date());
-        assertTrue(payload.containsKey(Payload.Registered.EXPIRATION_TIME));
+        Date date = new Date(100);
+        payload.setExpirationTime(date);
+
+        assertThat(payload.getExpirationTime(), is(date));
     }
 
     @Test
     void testSetExpirationTime() {
         payload.setExpirationTime(239872398);
-        assertTrue(payload.containsKey(Payload.Registered.EXPIRATION_TIME));
-    }
+        Date expected = new Date(239872398L);
 
-    @Test
-    void getExpirationTime() {
-        Date currentDate = new Date();
-        payload.setExpirationTime(currentDate);
-        assertEquals(payload.getExpirationTime(), currentDate);
+        assertThat(payload.getExpirationTime(), is(expected));
     }
 
     @Test
     void setNotBefore() {
-        payload.setNotBefore(new Date());
-        assertTrue(payload.containsKey(Payload.Registered.NOT_BEFORE));
-    }
+        Date date = new Date(100);
+        payload.setNotBefore(date);
 
-    @Test
-    void testSetNotBefore() {
-        payload.setNotBefore(239872398);
-        assertTrue(payload.containsKey(Payload.Registered.NOT_BEFORE));
-    }
-
-    @Test
-    void getNotBefore() {
-        Date currentDate = new Date();
-        payload.setNotBefore(currentDate);
-        assertEquals(payload.getNotBefore(), currentDate);
+        assertThat(payload.getNotBefore(), is(date));
     }
 
     @Test
     void setIssuedAt() {
-        payload.setIssuedAt(new Date());
-        assertTrue(payload.containsKey(Payload.Registered.ISSUED_AT));
-    }
+        Date date = new Date(100);
+        payload.setIssuedAt(date);
 
-    @Test
-    void testSetIssuedAt() {
-        payload.setIssuedAt(239872398);
-        assertTrue(payload.containsKey(Payload.Registered.ISSUED_AT));
-    }
-
-    @Test
-    void getIssuedAt() {
-        Date currentDate = new Date();
-        payload.setIssuedAt(currentDate);
-        assertEquals(payload.getIssuedAt(), currentDate);
+        assertThat(payload.getIssuedAt(), is(date));
     }
 
     @Test
     void setID() {
         payload.setID("id");
-        assertTrue(payload.containsKey(Payload.Registered.JWT_ID));
+        String expected = "id";
+
+        assertThat(payload.getID(), is(expected));
     }
 
     @Test
-    void getID() {
-        payload.setID("id");
-        assertEquals(payload.getID(), "id");
+    void base64EncodedWithEmptyPayload() {
+        String expected = "e30";
+
+        assertThat(payload.base64Encoded(), is(expected));
+    }
+
+    @Test
+    void base64EncodedWithIssuer() {
+        payload.setIssuer("issuer");
+        String expected = "eyJpc3MiOiJpc3N1ZXIifQ";
+
+        assertThat(payload.base64Encoded(), is(expected));
     }
 }

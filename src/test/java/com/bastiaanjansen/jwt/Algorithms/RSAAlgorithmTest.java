@@ -1,5 +1,7 @@
 package com.bastiaanjansen.jwt.Algorithms;
 
+import com.bastiaanjansen.jwt.Exceptions.JWTSignException;
+import com.bastiaanjansen.jwt.Exceptions.JWTValidationException;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -13,6 +15,8 @@ import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
 import java.util.Base64;
 
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
 class RSAAlgorithmTest {
@@ -45,28 +49,51 @@ class RSAAlgorithmTest {
     }
 
     @Test
-    void sign() {
+    void sign_doesNotThrow() {
+        assertDoesNotThrow(() -> algorithm.sign("data".getBytes(StandardCharsets.UTF_8)));
+    }
+
+    @Test
+    void sign() throws JWTSignException {
+        byte[] signed = algorithm.sign("data".getBytes(StandardCharsets.UTF_8));
+        String signedBase64URLEncoded = Base64.getUrlEncoder().withoutPadding().encodeToString(signed);
+        String expected = "QdJrTBFl4oQ0-Q8N14ZU_pXH0AZwpXS13c6W6XBlFw8WyKDjJ9dbwlMjYN9iparakh4WpkBTVHlfN4l9NcZaIipBcQZtgf6ZD3GJ5OfL2ZYVWdgBQKreDBS6frMrukC8aUZ3dckSWlYmC2R2OIdOZ_Dv37LEcr1boYGVCc9IokgnkhgcxTLm22RwcgF3-qiizgi0aSQy-p30YyKSza1NV6Sh_mJazVUhP2RND94bEZVL6bUVLS7g7W2YENDEjoHNIkKezVJ73Ek_LDaRA-DquiXeVpFuLJork7POVE3zv6Gzvbr196-GezLxw5QKi533TOpR4sXQP3sR6tOVFw3XxQ";
+
+        assertThat(signedBase64URLEncoded, is(expected));
+    }
+
+    @Test
+    void signWithString_doesNotThrow() {
+        assertDoesNotThrow(() -> algorithm.sign("data"));
+    }
+
+    @Test
+    void signWithString() throws JWTSignException {
+        byte[] signed = algorithm.sign("data");
+        String signedBase64URLEncoded = Base64.getUrlEncoder().withoutPadding().encodeToString(signed);
+        String expected = "QdJrTBFl4oQ0-Q8N14ZU_pXH0AZwpXS13c6W6XBlFw8WyKDjJ9dbwlMjYN9iparakh4WpkBTVHlfN4l9NcZaIipBcQZtgf6ZD3GJ5OfL2ZYVWdgBQKreDBS6frMrukC8aUZ3dckSWlYmC2R2OIdOZ_Dv37LEcr1boYGVCc9IokgnkhgcxTLm22RwcgF3-qiizgi0aSQy-p30YyKSza1NV6Sh_mJazVUhP2RND94bEZVL6bUVLS7g7W2YENDEjoHNIkKezVJ73Ek_LDaRA-DquiXeVpFuLJork7POVE3zv6Gzvbr196-GezLxw5QKi533TOpR4sXQP3sR6tOVFw3XxQ";
+
+        assertThat(signedBase64URLEncoded, is(expected));
+    }
+
+    @Test
+    void verify_doesNotThrow() {
         assertDoesNotThrow(() -> {
-            byte[] signed = algorithm.sign("data".getBytes(StandardCharsets.UTF_8));
-            String signedBase64URLEncoded = Base64.getUrlEncoder().withoutPadding().encodeToString(signed);
-            assertEquals(signedBase64URLEncoded, "QdJrTBFl4oQ0-Q8N14ZU_pXH0AZwpXS13c6W6XBlFw8WyKDjJ9dbwlMjYN9iparakh4WpkBTVHlfN4l9NcZaIipBcQZtgf6ZD3GJ5OfL2ZYVWdgBQKreDBS6frMrukC8aUZ3dckSWlYmC2R2OIdOZ_Dv37LEcr1boYGVCc9IokgnkhgcxTLm22RwcgF3-qiizgi0aSQy-p30YyKSza1NV6Sh_mJazVUhP2RND94bEZVL6bUVLS7g7W2YENDEjoHNIkKezVJ73Ek_LDaRA-DquiXeVpFuLJork7POVE3zv6Gzvbr196-GezLxw5QKi533TOpR4sXQP3sR6tOVFw3XxQ");
+            algorithm.verify("data".getBytes(StandardCharsets.UTF_8), Base64.getUrlDecoder().decode("QdJrTBFl4oQ0-Q8N14ZU_pXH0AZwpXS13c6W6XBlFw8WyKDjJ9dbwlMjYN9iparakh4WpkBTVHlfN4l9NcZaIipBcQZtgf6ZD3GJ5OfL2ZYVWdgBQKreDBS6frMrukC8aUZ3dckSWlYmC2R2OIdOZ_Dv37LEcr1boYGVCc9IokgnkhgcxTLm22RwcgF3-qiizgi0aSQy-p30YyKSza1NV6Sh_mJazVUhP2RND94bEZVL6bUVLS7g7W2YENDEjoHNIkKezVJ73Ek_LDaRA-DquiXeVpFuLJork7POVE3zv6Gzvbr196-GezLxw5QKi533TOpR4sXQP3sR6tOVFw3XxQ"));
         });
     }
 
     @Test
-    void signWithString() {
-        assertDoesNotThrow(() -> {
-            byte[] signed = algorithm.sign("data");
-            String signedBase64URLEncoded = Base64.getUrlEncoder().withoutPadding().encodeToString(signed);
-            assertEquals(signedBase64URLEncoded, "QdJrTBFl4oQ0-Q8N14ZU_pXH0AZwpXS13c6W6XBlFw8WyKDjJ9dbwlMjYN9iparakh4WpkBTVHlfN4l9NcZaIipBcQZtgf6ZD3GJ5OfL2ZYVWdgBQKreDBS6frMrukC8aUZ3dckSWlYmC2R2OIdOZ_Dv37LEcr1boYGVCc9IokgnkhgcxTLm22RwcgF3-qiizgi0aSQy-p30YyKSza1NV6Sh_mJazVUhP2RND94bEZVL6bUVLS7g7W2YENDEjoHNIkKezVJ73Ek_LDaRA-DquiXeVpFuLJork7POVE3zv6Gzvbr196-GezLxw5QKi533TOpR4sXQP3sR6tOVFw3XxQ");
-        });
+    void verifyExpectedIsCorrect() throws JWTValidationException {
+        boolean isValid = algorithm.verify("data".getBytes(StandardCharsets.UTF_8), Base64.getUrlDecoder().decode("QdJrTBFl4oQ0-Q8N14ZU_pXH0AZwpXS13c6W6XBlFw8WyKDjJ9dbwlMjYN9iparakh4WpkBTVHlfN4l9NcZaIipBcQZtgf6ZD3GJ5OfL2ZYVWdgBQKreDBS6frMrukC8aUZ3dckSWlYmC2R2OIdOZ_Dv37LEcr1boYGVCc9IokgnkhgcxTLm22RwcgF3-qiizgi0aSQy-p30YyKSza1NV6Sh_mJazVUhP2RND94bEZVL6bUVLS7g7W2YENDEjoHNIkKezVJ73Ek_LDaRA-DquiXeVpFuLJork7POVE3zv6Gzvbr196-GezLxw5QKi533TOpR4sXQP3sR6tOVFw3XxQ"));
+
+        assertThat(isValid, is(true));
     }
 
     @Test
-    void verify() {
-        assertDoesNotThrow(() -> {
-            boolean isValid = algorithm.verify("data".getBytes(StandardCharsets.UTF_8), Base64.getUrlDecoder().decode("QdJrTBFl4oQ0-Q8N14ZU_pXH0AZwpXS13c6W6XBlFw8WyKDjJ9dbwlMjYN9iparakh4WpkBTVHlfN4l9NcZaIipBcQZtgf6ZD3GJ5OfL2ZYVWdgBQKreDBS6frMrukC8aUZ3dckSWlYmC2R2OIdOZ_Dv37LEcr1boYGVCc9IokgnkhgcxTLm22RwcgF3-qiizgi0aSQy-p30YyKSza1NV6Sh_mJazVUhP2RND94bEZVL6bUVLS7g7W2YENDEjoHNIkKezVJ73Ek_LDaRA-DquiXeVpFuLJork7POVE3zv6Gzvbr196-GezLxw5QKi533TOpR4sXQP3sR6tOVFw3XxQ"));
-            assertTrue(isValid);
-        });
+    void verifyExpectedIsIncorrect() throws JWTValidationException {
+        boolean isValid = algorithm.verify("data".getBytes(StandardCharsets.UTF_8), Base64.getUrlDecoder().decode("QdJrTBFl4oQ0-Q8N14ZU_pXH0AZwpXS13c6W6XBlFw8WyKDjJ9dbwlMjYN9iparakh4WpkBTVHlfN4l9NcZaIipBcQZtgf6ZD3GJ5OfL2ZYVWdgBQKreDBS6frMrukC8aUZ3dckSWlYmC2R2OIdOZ_Dv37LEcr1boYGVCc9IokgnkhgcxTLm22RwcgF3-qiizgi0aSQy-p30YyKSza1NV6Sh_mJazVUhP2RND94bEZVL6bUVLS7g7W2YENDEjoHNIkKezVJ73Ek_LDaRA-DquiXeVpFuLJork7POVE3zv6Gzvbr196-GezLxw5QKi533TOpR4sXQP3sR6tOVFw3Xxs"));
+
+        assertThat(isValid, is(false));
     }
 }

@@ -1,7 +1,6 @@
 # JWT-Java
 
-![](https://github./BastiaanJansen/JWT-Java/workflows/Build/badge.svg)
-![](https://github.com/BastiaanJansen/JWT-Java/workflows/Test/badge.svg)
+[![Build & Test](https://github.com/BastiaanJansen/jwt-java/actions/workflows/build.yml/badge.svg)](https://github.com/BastiaanJansen/jwt-java/actions/workflows/build.yml)
 ![](https://img.shields.io/github/license/BastiaanJansen/JWT-Java)
 ![](https://img.shields.io/github/issues/BastiaanJansen/JWT-Java)
 

@@ -208,7 +208,7 @@ Date exp = payload.getExpirationTime();
 Date nbf = payload.getNotBefore();
 String[] audience = payload.getAudience();
 
-Object customClaim = payload.getClaim("username");
+String customClaim = payload.getClaim("username", String.class);
 
 boolean hasClaim = payload.containsClaim("key");
 ```

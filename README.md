@@ -245,7 +245,7 @@ JWTValidator validator = new DefaultJWTValidator.Builder()
   .withIssuer("issuer")
   .withID("id")
   .withOneOfAudience("aud1", "aud2") // Enforce audience has "aud1" or "aud2"
-  .withCLaim("username", "BastiaanJansen") // Enforce custom claim value
+  .withClaim("username", "BastiaanJansen") // Enforce custom claim value
   .build();
 
 try {

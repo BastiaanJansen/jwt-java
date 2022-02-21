@@ -7,7 +7,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-public class Payload {
+public class Payload extends Claims {
     public static class Registered {
         static String ISSUER = "iss";
         static String SUBJECT = "sub";
@@ -18,14 +18,10 @@ public class Payload {
         static String JWT_ID = "jti";
     }
 
-    private final Map<String, Object> claims;
-
-    public Payload() {
-        claims = new HashMap<>();
-    }
+    public Payload() {}
 
     public Payload(Map<String, Object> map) {
-        claims = new HashMap<>(map);
+        claims.putAll(map);
     }
 
     public static Payload fromBase64EncodedJSON(String encodedJSON) {
@@ -39,8 +35,7 @@ public class Payload {
     }
 
     public String getIssuer() {
-        Object issuer = claims.get(Registered.ISSUER);
-        return getString(issuer);
+        return getClaim(Registered.ISSUER, String.class);
     }
 
     public void setSubject(String subject) {
@@ -48,8 +43,7 @@ public class Payload {
     }
 
     public String getSubject() {
-        Object subject = claims.get(Registered.SUBJECT);
-        return getString(subject);
+        return getClaim(Registered.SUBJECT, String.class);
     }
 
     public void setAudience(String... audience) {
@@ -109,34 +103,7 @@ public class Payload {
     }
 
     public String getID() {
-        Object id = claims.get(Registered.JWT_ID);
-        return getString(id);
-    }
-
-    public boolean containsClaim(String name) {
-        return claims.containsKey(name);
-    }
-
-    public void addClaim(String name, Object value) {
-        if (name == null) throw new IllegalArgumentException("name cannot be null");
-        if (value == null) throw new IllegalArgumentException("value cannot be null");
-        claims.put(name, value);
-    }
-
-    public Object getClaim(String name) {
-        return claims.get(name);
-    }
-
-    public Map<String, Object> getAsMap() {
-        return new HashMap<>(claims);
-    }
-
-    public String base64Encoded() {
-        return Base64Utils.encodeBase64URL(new JSONObject(claims).toString());
-    }
-
-    private String getString(Object object) {
-        return object != null ? String.valueOf(object) : null;
+        return getClaim(Registered.JWT_ID, String.class);
     }
 
     private Date getDate(Object object) {

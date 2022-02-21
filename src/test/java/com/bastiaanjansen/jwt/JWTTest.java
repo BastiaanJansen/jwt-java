@@ -130,7 +130,7 @@ class JWTTest {
         JWT jwt = new JWT.Builder(algorithm).withClaim("custom-claim", "custom-claim-value").build();
         String expected = "custom-claim-value";
 
-        assertThat(jwt.getPayload().getClaim("custom-claim"), is(expected));
+        assertThat(jwt.getPayload().getClaim("custom-claim", String.class), is(expected));
     }
 
     @Test

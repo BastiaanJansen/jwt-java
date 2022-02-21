@@ -3,20 +3,16 @@ package com.bastiaanjansen.jwt;
 import com.bastiaanjansen.jwt.Utils.Base64Utils;
 import org.json.JSONObject;
 
-import java.util.HashMap;
 import java.util.Map;
 
-public class Header {
+public class Header extends Claims {
     public static class Registered {
         static String TYPE = "typ";
         static String CONTENT_TYPE = "cty";
         static String ALGORITHM = "alg";
     }
 
-    private final Map<String, Object> claims;
-
     public Header() {
-        claims = new HashMap<>();
         setType("JWT");
     }
 
@@ -36,8 +32,7 @@ public class Header {
     }
 
     public String getType() {
-        Object type = claims.get(Registered.TYPE);
-        return getString(type);
+        return getClaim(Registered.TYPE, String.class);
     }
 
     public void setContentType(String value) {
@@ -45,8 +40,7 @@ public class Header {
     }
 
     public String getContentType() {
-        Object contentType = claims.get(Registered.CONTENT_TYPE);
-        return getString(contentType);
+        return getClaim(Registered.CONTENT_TYPE, String.class);
     }
 
     public void setAlgorithm(String algorithm) {
@@ -54,34 +48,6 @@ public class Header {
     }
 
     public String getAlgorithm() {
-        Object algorithm = claims.get(Registered.ALGORITHM);
-        return getString(algorithm);
-    }
-
-    public boolean containsClaim(String name) {
-        return claims.containsKey(name);
-    }
-
-    public Map<String, Object> getAsMap() {
-        return new HashMap<>(claims);
-    }
-
-    public String base64Encoded() {
-        return Base64Utils.encodeBase64URL(new JSONObject(claims).toString());
-    }
-
-    public Object getClaim(String name) {
-        return claims.get(name);
-    }
-
-    public void addClaim(String name, Object value) {
-        if (name == null) throw new IllegalArgumentException("name cannot be null");
-        if (value == null) throw new IllegalArgumentException("value cannot be null");
-
-        claims.put(name, value);
-    }
-
-    private String getString(Object object) {
-        return object != null ? String.valueOf(object) : null;
+        return getClaim(Registered.ALGORITHM, String.class);
     }
 }

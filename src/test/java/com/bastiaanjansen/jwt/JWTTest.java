@@ -8,7 +8,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.function.Executable;
 
-import java.time.Instant;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -131,7 +130,7 @@ class JWTTest {
         JWT jwt = new JWT.Builder(algorithm).withClaim("custom-claim", "custom-claim-value").build();
         String expected = "custom-claim-value";
 
-        assertThat(jwt.getPayload().get("custom-claim"), is(expected));
+        assertThat(jwt.getPayload().getClaim("custom-claim"), is(expected));
     }
 
     @Test
@@ -139,7 +138,7 @@ class JWTTest {
         JWT jwt = new JWT.Builder(algorithm).withHeader("custom-header", "custom-header-value").build();
         String expected = "custom-header-value";
 
-        assertThat(jwt.getHeader().get("custom-header"), is(expected));
+        assertThat(jwt.getHeader().getClaim("custom-header"), is(expected));
     }
 
     @Test

@@ -70,7 +70,7 @@ public class Header {
         return Base64Utils.encodeBase64URL(new JSONObject(claims).toString());
     }
 
-    public Object get(String name) {
+    public Object getClaim(String name) {
         return claims.get(name);
     }
 

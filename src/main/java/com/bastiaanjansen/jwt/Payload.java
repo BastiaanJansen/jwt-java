@@ -123,7 +123,7 @@ public class Payload {
         claims.put(name, value);
     }
 
-    public Object get(String name) {
+    public Object getClaim(String name) {
         return claims.get(name);
     }
 

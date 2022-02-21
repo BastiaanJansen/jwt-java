@@ -125,6 +125,16 @@ public class DefaultJWTValidator implements JWTValidator {
                 }
                 return false;
             });
+
+            return this;
+        }
+
+        public Builder withAllOfAudience(String... audience) {
+            withClaim(Payload.Registered.AUDIENCE, value -> {
+                String[] values = (String[]) value;
+                return Arrays.asList(values).containsAll(Arrays.asList(audience));
+            });
+
             return this;
         }
 
@@ -195,10 +205,10 @@ public class DefaultJWTValidator implements JWTValidator {
     }
 
     public Map<String, ClaimValidator> getHeaderValidators() {
-        return headerValidators;
+        return new HashMap<>(headerValidators);
     }
 
     public Map<String, ClaimValidator> getPayloadValidators() {
-        return payloadValidators;
+        return new HashMap<>(payloadValidators);
     }
 }

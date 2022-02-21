@@ -160,6 +160,22 @@ class DefaultJWTValidatorTest {
     }
 
     @Test
+    void validateWithValidAllAudience_doesNotThrow() throws JWTCreationException {
+        JWT jwt = new JWT.Builder(algorithm).withAudience("aud1", "aud2", "aud3").build();
+        JWTValidator validator = new DefaultJWTValidator.Builder().withAllOfAudience("aud1", "aud2").build();
+
+        assertDoesNotThrow(() -> validator.validate(jwt));
+    }
+
+    @Test
+    void validateWithValidAllAudience_throwsJWTValidationException() throws JWTCreationException {
+        JWT jwt = new JWT.Builder(algorithm).withAudience("aud1", "aud3").build();
+        JWTValidator validator = new DefaultJWTValidator.Builder().withAllOfAudience("aud1", "aud2").build();
+
+        assertThrows(JWTValidationException.class, () -> validator.validate(jwt));
+    }
+
+    @Test
     void validateWithInvalidExpirationDate_throwsJWTValidationException() throws JWTCreationException {
         JWT jwt = new JWT.Builder(algorithm).withExpirationTime(100).build();
         JWTValidator validator = new DefaultJWTValidator.Builder().withExpirationTime(200).build();

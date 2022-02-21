@@ -144,7 +144,7 @@ payload.setIssuer("issuer");
 payload.setAudience("aud1", "aud2");
 payload.setIssuedAt(new Date());
 payload.setID("id");
-payload.put("username", "BastiaanJansen"); // add custom claims
+payload.addClaim("username", "BastiaanJansen"); // add custom claims
 
 try {
   String jwt = new JWT(algorithm, header, payload).sign();

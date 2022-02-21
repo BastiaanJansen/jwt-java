@@ -208,7 +208,7 @@ Date exp = payload.getExpirationTime();
 Date nbf = payload.getNotBefore();
 String[] audience = payload.getAudience();
 
-Object customClaim = payload.getClaim("username");
+String customClaim = payload.getClaim("username", String.class);
 
 boolean hasClaim = payload.containsClaim("key");
 ```
@@ -245,7 +245,7 @@ JWTValidator validator = new DefaultJWTValidator.Builder()
   .withIssuer("issuer")
   .withID("id")
   .withOneOfAudience("aud1", "aud2") // Enforce audience has "aud1" or "aud2"
-  .withCLaim("username", "BastiaanJansen") // Enforce custom claim value
+  .withClaim("username", "BastiaanJansen") // Enforce custom claim value
   .build();
 
 try {

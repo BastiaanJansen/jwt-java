@@ -138,7 +138,7 @@ class JWTTest {
         JWT jwt = new JWT.Builder(algorithm).withHeader("custom-header", "custom-header-value").build();
         String expected = "custom-header-value";
 
-        assertThat(jwt.getHeader().getClaim("custom-header"), is(expected));
+        assertThat(jwt.getHeader().getClaim("custom-header", String.class), is(expected));
     }
 
     @Test

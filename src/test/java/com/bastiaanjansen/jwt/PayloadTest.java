@@ -154,10 +154,37 @@ class PayloadTest {
     }
 
     @Test
+    void getCustomClaimAsDate() {
+        Date date = new Date(100);
+        payload.addClaim("key", date);
+
+        assertThat(payload.getClaim("key", Date.class), is(date));
+    }
+
+    @Test
+    void getDateClaimAsDate() {
+        Date date = new Date(100);
+        payload.setNotBefore(date);
+
+        assertThat(payload.getClaim(Payload.Registered.NOT_BEFORE, Date.class), is(date));
+    }
+
+    @Test
     void getClaimConverted() {
         payload.addClaim("key", "value");
         String expected = "VALUE";
 
         assertThat(payload.getClaim("key", value -> String.valueOf(value).toUpperCase()), is(expected));
+    }
+
+    @Test
+    void getClaimLongConvertedToDate() {
+        payload.addClaim("key", 100);
+        Date expected = new Date(100);
+
+        assertThat(payload.getClaim("key", value -> {
+            long millis = Long.parseLong(String.valueOf(value));
+            return new Date(millis);
+        }), is(expected));
     }
 }

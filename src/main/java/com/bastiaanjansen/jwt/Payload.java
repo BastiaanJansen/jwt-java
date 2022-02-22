@@ -51,7 +51,7 @@ public class Payload extends Claims {
     }
 
     public String[] getAudience() {
-        Object audience = claims.get(Registered.AUDIENCE);
+        Object audience = getClaim(Registered.AUDIENCE, Object.class);
 
         if (!(audience instanceof Object[]))
             return new String[] {(String) audience};
@@ -68,8 +68,7 @@ public class Payload extends Claims {
     }
 
     public Date getExpirationTime() {
-        Object expirationDate = claims.get(Registered.EXPIRATION_TIME);
-        return getDate(expirationDate);
+        return getClaim(Registered.EXPIRATION_TIME, Date.class);
     }
 
     public void setNotBefore(long timeSinceEpoch) {
@@ -81,8 +80,7 @@ public class Payload extends Claims {
     }
 
     public Date getNotBefore() {
-        Object notBefore = claims.get(Registered.NOT_BEFORE);
-        return getDate(notBefore);
+        return getClaim(Registered.NOT_BEFORE, Date.class);
     }
 
     public void setIssuedAt(long timeSinceEpoch) {
@@ -94,8 +92,7 @@ public class Payload extends Claims {
     }
 
     public Date getIssuedAt() {
-        Object issuedAt = claims.get(Registered.ISSUED_AT);
-        return getDate(issuedAt);
+        return getClaim(Registered.ISSUED_AT, Date.class);
     }
 
     public void setID(String id) {
@@ -104,17 +101,5 @@ public class Payload extends Claims {
 
     public String getID() {
         return getClaim(Registered.JWT_ID, String.class);
-    }
-
-    private Date getDate(Object object) {
-        if (object == null)
-            return null;
-
-        if (object instanceof Number) {
-            long millis = ((Number) object).longValue();
-            return new Date(millis);
-        }
-
-        throw new IllegalStateException("Cannot create date from " + object);
     }
 }

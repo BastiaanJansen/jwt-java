@@ -3,10 +3,13 @@ package com.bastiaanjansen.jwt;
 import com.bastiaanjansen.jwt.Utils.Base64Utils;
 import org.json.JSONObject;
 
+import java.util.Arrays;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
 public class Claims {
+    private final String[] registeredDateClaims = { Payload.Registered.EXPIRATION_TIME, Payload.Registered.ISSUED_AT, Payload.Registered.NOT_BEFORE };
     protected final Map<String, Object> claims;
 
     protected Claims() {
@@ -26,12 +29,24 @@ public class Claims {
         return Base64Utils.encodeBase64URL(json);
     }
 
-    public Object getClaim(String name) {
-        return claims.get(name);
-    }
-
+    /**
+     * Get a claim by name and cast it to a specific type
+     *
+     * @param name of the claim
+     * @param type of the claim
+     * @param <T> type of the claim
+     * @return claim value cast to specified type
+     */
     public <T> T getClaim(String name, Class<T> type) {
         Object value = claims.get(name);
+
+        boolean isDateClaim = Arrays.asList(registeredDateClaims).contains(name);
+
+        if (isDateClaim) {
+            long millisSinceEpoch = Long.parseLong(String.valueOf(value));
+            value = new Date(millisSinceEpoch);
+        }
+
         return type.cast(value);
     }
 

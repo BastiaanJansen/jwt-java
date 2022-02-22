@@ -22,7 +22,8 @@ public class Claims {
     }
 
     public String base64Encoded() {
-        return Base64Utils.encodeBase64URL(new JSONObject(claims).toString());
+        String json = new JSONObject(claims).toString();
+        return Base64Utils.encodeBase64URL(json);
     }
 
     public Object getClaim(String name) {

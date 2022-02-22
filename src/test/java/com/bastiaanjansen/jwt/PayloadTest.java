@@ -128,4 +128,36 @@ class PayloadTest {
 
         assertThat(payload.base64Encoded(), is(expected));
     }
+
+    @Test
+    void getClaimAsString() {
+        payload.addClaim("key", "value");
+        String expected = "value";
+
+        assertThat(payload.getClaim("key", String.class), is(expected));
+    }
+
+    @Test
+    void getClaimAsInteger() {
+        payload.addClaim("key", 100);
+        int expected = 100;
+
+        assertThat(payload.getClaim("key", Integer.class), is(expected));
+    }
+
+    @Test
+    void getClaimAsLong() {
+        payload.addClaim("key", 100L);
+        long expected = 100;
+
+        assertThat(payload.getClaim("key", Long.class), is(expected));
+    }
+
+    @Test
+    void getClaimConverted() {
+        payload.addClaim("key", "value");
+        String expected = "VALUE";
+
+        assertThat(payload.getClaim("key", value -> String.valueOf(value).toUpperCase()), is(expected));
+    }
 }

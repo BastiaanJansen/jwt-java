@@ -1,10 +1,10 @@
 package com.bastiaanjansen.jwt;
 
-import com.bastiaanjansen.jwt.Algorithms.Algorithm;
-import com.bastiaanjansen.jwt.Exceptions.JWTCreationException;
-import com.bastiaanjansen.jwt.Exceptions.JWTDecodeException;
-import com.bastiaanjansen.jwt.Exceptions.JWTExpiredException;
-import com.bastiaanjansen.jwt.Exceptions.JWTValidationException;
+import com.bastiaanjansen.jwt.algorithms.Algorithm;
+import com.bastiaanjansen.jwt.exceptions.JWTCreationException;
+import com.bastiaanjansen.jwt.exceptions.JWTDecodeException;
+import com.bastiaanjansen.jwt.exceptions.JWTExpiredException;
+import com.bastiaanjansen.jwt.exceptions.JWTValidationException;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

@@ -1,13 +1,11 @@
-package com.bastiaanjansen.jwt.Algorithms;
+package com.bastiaanjansen.jwt.algorithms;
 
-import com.bastiaanjansen.jwt.Exceptions.JWTSignException;
-import com.bastiaanjansen.jwt.Exceptions.JWTValidationException;
+import com.bastiaanjansen.jwt.exceptions.JWTSignException;
+import com.bastiaanjansen.jwt.exceptions.JWTValidationException;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
 import java.util.Base64;
 
 import static org.hamcrest.CoreMatchers.is;

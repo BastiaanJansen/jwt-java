@@ -1,4 +1,4 @@
-package com.bastiaanjansen.jwt.Exceptions;
+package com.bastiaanjansen.jwt.exceptions;
 
 public class JWTSignException extends JWTException {
 

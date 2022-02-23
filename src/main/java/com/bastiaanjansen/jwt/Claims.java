@@ -1,6 +1,6 @@
 package com.bastiaanjansen.jwt;
 
-import com.bastiaanjansen.jwt.Utils.Base64Utils;
+import com.bastiaanjansen.jwt.utils.Base64Utils;
 import org.json.JSONObject;
 
 import java.util.Arrays;

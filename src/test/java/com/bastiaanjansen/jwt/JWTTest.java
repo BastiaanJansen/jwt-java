@@ -1,8 +1,8 @@
 package com.bastiaanjansen.jwt;
 
-import com.bastiaanjansen.jwt.Algorithms.Algorithm;
-import com.bastiaanjansen.jwt.Exceptions.JWTCreationException;
-import com.bastiaanjansen.jwt.Exceptions.JWTDecodeException;
+import com.bastiaanjansen.jwt.algorithms.Algorithm;
+import com.bastiaanjansen.jwt.exceptions.JWTCreationException;
+import com.bastiaanjansen.jwt.exceptions.JWTDecodeException;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -249,7 +249,7 @@ class JWTTest {
     void fromRawMalformedJWT_throwsJWTCreationException() {
         String jwt = "eyJhbGciOiJIUzM4NCIssdsdjkhInR5cCI6IkpXVCJ9shdkshdsdssdljs.eyJpc3MiOiJpc3N1ZXIiLCJhdWQiOiJhdWRpZW5jZSIsImlhdCI6MTYxNDY3NjkyNjE3MiwianRpIjoiaWQifQ.ibsMduBXhE8Y1TkDAazH-J7BaAtcJTcwmHfzvQg9EWS6uKZFsA_7z4LYtSa-nnR1";
 
-        assertThrows(JWTCreationException.class, () -> JWT.fromRawJWT(algorithm, jwt));
+        assertThrows(JWTDecodeException.class, () -> JWT.fromRawJWT(algorithm, jwt));
     }
 
     @Test

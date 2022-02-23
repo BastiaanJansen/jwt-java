@@ -1,7 +1,7 @@
 package com.bastiaanjansen.jwt;
 
-import com.bastiaanjansen.jwt.Exceptions.JWTExpiredException;
-import com.bastiaanjansen.jwt.Exceptions.JWTValidationException;
+import com.bastiaanjansen.jwt.exceptions.JWTExpiredException;
+import com.bastiaanjansen.jwt.exceptions.JWTValidationException;
 
 import java.nio.charset.StandardCharsets;
 import java.util.*;

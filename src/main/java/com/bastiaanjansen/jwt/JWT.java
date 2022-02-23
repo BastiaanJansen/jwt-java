@@ -1,15 +1,15 @@
 package com.bastiaanjansen.jwt;
 
-import com.bastiaanjansen.jwt.Algorithms.Algorithm;
+import com.bastiaanjansen.jwt.algorithms.Algorithm;
 
 import java.nio.charset.StandardCharsets;
 import java.util.*;
 
-import com.bastiaanjansen.jwt.Exceptions.JWTCreationException;
-import com.bastiaanjansen.jwt.Exceptions.JWTDecodeException;
-import com.bastiaanjansen.jwt.Exceptions.JWTValidationException;
-import com.bastiaanjansen.jwt.Exceptions.JWTSignException;
-import com.bastiaanjansen.jwt.Utils.Base64Utils;
+import com.bastiaanjansen.jwt.exceptions.JWTCreationException;
+import com.bastiaanjansen.jwt.exceptions.JWTDecodeException;
+import com.bastiaanjansen.jwt.exceptions.JWTValidationException;
+import com.bastiaanjansen.jwt.exceptions.JWTSignException;
+import com.bastiaanjansen.jwt.utils.Base64Utils;
 import org.json.JSONException;
 
 /**
@@ -86,10 +86,8 @@ public class JWT {
                 throw new JWTCreationException("Algorithm defined in header does not match " + algorithm.getName());
 
             return new JWT(algorithm, header, payload, signature);
-        } catch (IllegalArgumentException e) {
+        } catch (IllegalArgumentException | JSONException e) {
             throw new JWTDecodeException("Error decoding JWT");
-        } catch (JSONException e) {
-            throw new JWTCreationException("JSON is not valid");
         }
     }
 

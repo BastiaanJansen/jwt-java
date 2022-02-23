@@ -1,9 +1,7 @@
-package com.bastiaanjansen.jwt.Algorithms;
+package com.bastiaanjansen.jwt.algorithms;
 
-import com.bastiaanjansen.jwt.Exceptions.JWTSignException;
-import com.bastiaanjansen.jwt.Exceptions.JWTValidationException;
-import com.bastiaanjansen.jwt.JWT;
-import com.bastiaanjansen.jwt.Utils.Base64Utils;
+import com.bastiaanjansen.jwt.exceptions.JWTSignException;
+import com.bastiaanjansen.jwt.exceptions.JWTValidationException;
 
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;

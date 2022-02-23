@@ -1,18 +1,7 @@
 package com.bastiaanjansen.jwt;
 
-import com.bastiaanjansen.jwt.Algorithms.Algorithm;
-import com.bastiaanjansen.jwt.Exceptions.JWTCreationException;
-import com.bastiaanjansen.jwt.Exceptions.JWTException;
-
-import java.security.*;
-import java.security.interfaces.RSAPrivateKey;
-import java.security.interfaces.RSAPublicKey;
-import java.security.spec.InvalidKeySpecException;
-import java.security.spec.PKCS8EncodedKeySpec;
-import java.security.spec.X509EncodedKeySpec;
-import java.util.Base64;
-import java.util.Calendar;
-import java.util.Date;
+import com.bastiaanjansen.jwt.algorithms.Algorithm;
+import com.bastiaanjansen.jwt.exceptions.JWTCreationException;
 
 public class App {
     public static void main(String[] args) throws JWTCreationException {

@@ -29,8 +29,8 @@ class PayloadTest {
     @Test
     void constructorWithMap_getID() {
         Map<String, Object> map = new HashMap<>();
-        map.put(Payload.Registered.ISSUER, "issuer");
-        map.put(Payload.Registered.JWT_ID, "id");
+        map.put(Payload.Registered.ISSUER.getValue(), "issuer");
+        map.put(Payload.Registered.JWT_ID.getValue(), "id");
         String expected = "id";
 
         payload = new Payload(map);
@@ -41,8 +41,8 @@ class PayloadTest {
     @Test
     void constructorWithMap_getIssuer() {
         Map<String, Object> map = new HashMap<>();
-        map.put(Payload.Registered.ISSUER, "issuer");
-        map.put(Payload.Registered.JWT_ID, "id");
+        map.put(Payload.Registered.ISSUER.getValue(), "issuer");
+        map.put(Payload.Registered.JWT_ID.getValue(), "id");
         String expected = "issuer";
 
         payload = new Payload(map);
@@ -166,7 +166,7 @@ class PayloadTest {
         Date date = new Date(100);
         payload.setNotBefore(date);
 
-        assertThat(payload.getClaim(Payload.Registered.NOT_BEFORE, Date.class), is(date));
+        assertThat(payload.getClaim(Payload.Registered.NOT_BEFORE.getValue(), Date.class), is(date));
     }
 
     @Test

@@ -3,13 +3,11 @@ package com.bastiaanjansen.jwt;
 import com.bastiaanjansen.jwt.utils.Base64Utils;
 import org.json.JSONObject;
 
-import java.util.Arrays;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class Claims {
-    private final String[] registeredDateClaims = { Payload.Registered.EXPIRATION_TIME, Payload.Registered.ISSUED_AT, Payload.Registered.NOT_BEFORE };
+    private final Registered[] registeredDateClaims = { Registered.EXPIRATION_TIME, Registered.ISSUED_AT, Registered.NOT_BEFORE };
     protected final Map<String, Object> claims;
 
     protected Claims() {
@@ -37,14 +35,18 @@ public class Claims {
      * @param <T> type of the claim
      * @return claim value cast to specified type
      */
+    @SuppressWarnings("unchecked")
     public <T> T getClaim(String name, Class<T> type) {
         Object value = claims.get(name);
 
-        boolean isDateClaim = Arrays.asList(registeredDateClaims).contains(name);
+        boolean isDateClaim = Arrays.stream(registeredDateClaims)
+                .map(Claims.Registered::getValue)
+                .collect(Collectors.toList())
+                .contains(name);
 
         if (isDateClaim) {
             long millisSinceEpoch = Long.parseLong(String.valueOf(value));
-            value = new Date(millisSinceEpoch);
+            return (T) new Date(millisSinceEpoch);
         }
 
         return type.cast(value);
@@ -59,5 +61,28 @@ public class Claims {
         if (name == null) throw new IllegalArgumentException("name cannot be null");
         if (value == null) throw new IllegalArgumentException("value cannot be null");
         claims.put(name, value);
+    }
+
+    public enum Registered {
+        ISSUER("iss"),
+        SUBJECT("sub"),
+        AUDIENCE("aud"),
+        EXPIRATION_TIME("exp"),
+        NOT_BEFORE("nbf"),
+        ISSUED_AT("iat"),
+        JWT_ID("jti"),
+        TYPE("typ"),
+        CONTENT_TYPE("cty"),
+        ALGORITHM("alg");
+
+        private final String value;
+
+        Registered(String value) {
+            this.value = value;
+        }
+
+        public String getValue() {
+            return value;
+        }
     }
 }

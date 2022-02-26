@@ -10,6 +10,8 @@ import java.util.Base64;
  */
 public class Base64Utils {
 
+    private Base64Utils() {}
+
     /**
      * Encode string to base64URL string
      *

@@ -27,12 +27,12 @@ public class HMACAlgorithm extends Algorithm {
     @Override
     public byte[] sign(byte[] data) throws JWTSignException {
         try {
-            Mac HMAC = Mac.getInstance(description);
+            Mac mac = Mac.getInstance(description);
 
             SecretKeySpec secretKey = new SecretKeySpec(secret, description);
-            HMAC.init(secretKey);
+            mac.init(secretKey);
 
-            return HMAC.doFinal(data);
+            return mac.doFinal(data);
         } catch (NoSuchAlgorithmException | InvalidKeyException e) {
             throw new JWTSignException(e.getMessage());
         }
@@ -48,6 +48,4 @@ public class HMACAlgorithm extends Algorithm {
             throw new JWTValidationException(e.getMessage());
         }
     }
-
-
 }

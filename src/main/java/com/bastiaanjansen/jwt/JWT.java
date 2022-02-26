@@ -17,9 +17,9 @@ import org.json.JSONException;
  *
  * @author Bastiaan Jansen
  */
-public class JWT {
+public final class JWT {
 
-    private final static int NUMBER_OF_SEGMENTS = 3;
+    private static final int NUMBER_OF_SEGMENTS = 3;
 
     private final Algorithm algorithm;
     private final Header header;
@@ -360,7 +360,7 @@ public class JWT {
          * @throws JWTCreationException when the JWT could not be created
          */
         public String sign() throws JWTCreationException {
-            if (!header.containsClaim(Header.Registered.TYPE))
+            if (!header.containsClaim(Claims.Registered.TYPE.getValue()))
                 withType("JWT");
             return new JWT(this).sign();
         }

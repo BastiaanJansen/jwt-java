@@ -6,16 +6,7 @@ import org.json.JSONObject;
 import java.util.Date;
 import java.util.Map;
 
-public class Payload extends Claims {
-    public static class Registered {
-        static String ISSUER = "iss";
-        static String SUBJECT = "sub";
-        static String AUDIENCE = "aud";
-        static String EXPIRATION_TIME = "exp";
-        static String NOT_BEFORE = "nbf";
-        static String ISSUED_AT = "iat";
-        static String JWT_ID = "jti";
-    }
+public final class Payload extends Claims {
 
     public Payload() {}
 
@@ -30,27 +21,27 @@ public class Payload extends Claims {
     }
 
     public void setIssuer(String issuer) {
-        addClaim(Registered.ISSUER, issuer);
+        addClaim(Registered.ISSUER.getValue(), issuer);
     }
 
     public String getIssuer() {
-        return getClaim(Registered.ISSUER, String.class);
+        return getClaim(Registered.ISSUER.getValue(), String.class);
     }
 
     public void setSubject(String subject) {
-        addClaim(Registered.SUBJECT, subject);
+        addClaim(Registered.SUBJECT.getValue(), subject);
     }
 
     public String getSubject() {
-        return getClaim(Registered.SUBJECT, String.class);
+        return getClaim(Claims.Registered.SUBJECT.getValue(), String.class);
     }
 
     public void setAudience(String... audience) {
-        addClaim(Registered.AUDIENCE, audience);
+        addClaim(Registered.AUDIENCE.getValue(), audience);
     }
 
     public String[] getAudience() {
-        Object audience = getClaim(Registered.AUDIENCE, Object.class);
+        Object audience = getClaim(Registered.AUDIENCE.getValue(), Object.class);
 
         if (!(audience instanceof Object[]))
             return new String[] {(String) audience};
@@ -59,7 +50,7 @@ public class Payload extends Claims {
     }
 
     public void setExpirationTime(long timeSinceEpoch) {
-        addClaim(Registered.EXPIRATION_TIME, timeSinceEpoch);
+        addClaim(Registered.EXPIRATION_TIME.getValue(), timeSinceEpoch);
     }
 
     public void setExpirationTime(Date expirationTime) {
@@ -67,11 +58,11 @@ public class Payload extends Claims {
     }
 
     public Date getExpirationTime() {
-        return getClaim(Registered.EXPIRATION_TIME, Date.class);
+        return getClaim(Registered.EXPIRATION_TIME.getValue(), Date.class);
     }
 
     public void setNotBefore(long timeSinceEpoch) {
-        addClaim(Registered.NOT_BEFORE, timeSinceEpoch);
+        addClaim(Registered.NOT_BEFORE.getValue(), timeSinceEpoch);
     }
 
     public void setNotBefore(Date notBefore) {
@@ -79,11 +70,11 @@ public class Payload extends Claims {
     }
 
     public Date getNotBefore() {
-        return getClaim(Registered.NOT_BEFORE, Date.class);
+        return getClaim(Registered.NOT_BEFORE.getValue(), Date.class);
     }
 
     public void setIssuedAt(long timeSinceEpoch) {
-        addClaim(Registered.ISSUED_AT, timeSinceEpoch);
+        addClaim(Registered.ISSUED_AT.getValue(), timeSinceEpoch);
     }
 
     public void setIssuedAt(Date issuedAt) {
@@ -91,14 +82,14 @@ public class Payload extends Claims {
     }
 
     public Date getIssuedAt() {
-        return getClaim(Registered.ISSUED_AT, Date.class);
+        return getClaim(Registered.ISSUED_AT.getValue(), Date.class);
     }
 
     public void setID(String id) {
-        addClaim(Registered.JWT_ID, id);
+        addClaim(Registered.JWT_ID.getValue(), id);
     }
 
     public String getID() {
-        return getClaim(Registered.JWT_ID, String.class);
+        return getClaim(Registered.JWT_ID.getValue(), String.class);
     }
 }

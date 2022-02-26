@@ -5,12 +5,7 @@ import org.json.JSONObject;
 
 import java.util.Map;
 
-public class Header extends Claims {
-    public static class Registered {
-        static String TYPE = "typ";
-        static String CONTENT_TYPE = "cty";
-        static String ALGORITHM = "alg";
-    }
+public final class Header extends Claims {
 
     public Header() {
         setType("JWT");
@@ -28,26 +23,26 @@ public class Header extends Claims {
     }
 
     public void setType(String type) {
-        addClaim(Registered.TYPE, type);
+        addClaim(Registered.TYPE.getValue(), type);
     }
 
     public String getType() {
-        return getClaim(Registered.TYPE, String.class);
+        return getClaim(Registered.TYPE.getValue(), String.class);
     }
 
     public void setContentType(String value) {
-        addClaim(Registered.CONTENT_TYPE, value);
+        addClaim(Registered.CONTENT_TYPE.getValue(), value);
     }
 
     public String getContentType() {
-        return getClaim(Registered.CONTENT_TYPE, String.class);
+        return getClaim(Registered.CONTENT_TYPE.getValue(), String.class);
     }
 
     public void setAlgorithm(String algorithm) {
-        addClaim(Registered.ALGORITHM, algorithm);
+        addClaim(Registered.ALGORITHM.getValue(), algorithm);
     }
 
     public String getAlgorithm() {
-        return getClaim(Registered.ALGORITHM, String.class);
+        return getClaim(Registered.ALGORITHM.getValue(), String.class);
     }
 }

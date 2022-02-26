@@ -159,37 +159,49 @@ class JWTTest {
 
     @Test
     void builderWithHeaderIsNull_throwsIllegalArgument() {
-        assertThrows(IllegalArgumentException.class, () -> new JWT.Builder(algorithm).withHeader(null).build());
+        JWT.Builder builder = new JWT.Builder(algorithm);
+
+        assertThrows(IllegalArgumentException.class, () -> builder.withHeader(null));
     }
 
     @Test
     void builderWithHeaderNameIsNull_throwsIllegalArgument() {
-        assertThrows(IllegalArgumentException.class, () -> new JWT.Builder(algorithm).withHeader(null, "value").build());
+        JWT.Builder builder = new JWT.Builder(algorithm);
+
+        assertThrows(IllegalArgumentException.class, () -> builder.withHeader(null, "value"));
     }
 
     @Test
     void builderWithHeaderValueIsNull_throwsIllegalArgument() {
-        assertThrows(IllegalArgumentException.class, () -> new JWT.Builder(algorithm).withHeader("name", null).build());
+        JWT.Builder builder = new JWT.Builder(algorithm);
+
+        assertThrows(IllegalArgumentException.class, () -> builder.withHeader("name", null));
     }
 
     @Test
     void builderWithPayloadIsNull_throwsIllegalArgument() {
-        assertThrows(IllegalArgumentException.class, () -> new JWT.Builder(algorithm).withPayload(null).build());
+        JWT.Builder builder = new JWT.Builder(algorithm);
+
+        assertThrows(IllegalArgumentException.class, () -> builder.withPayload(null));
     }
 
     @Test
     void builderWithClaimNameIsNull_throwsIllegalArgument() {
-        assertThrows(IllegalArgumentException.class, () -> new JWT.Builder(algorithm).withClaim(null, "value").build());
+        JWT.Builder builder = new JWT.Builder(algorithm);
+
+        assertThrows(IllegalArgumentException.class, () -> builder.withClaim(null, "value"));
     }
 
     @Test
     void builderWithClaimValueIsNull_throwsIllegalArgument() {
-        assertThrows(IllegalArgumentException.class, () -> new JWT.Builder(algorithm).withClaim("name", null).build());
+        JWT.Builder builder = new JWT.Builder(algorithm);
+
+        assertThrows(IllegalArgumentException.class, () -> builder.withClaim("name", null));
     }
 
     @Test
     void builderAlgorithmIsNull_throwsIllegalArgument() {
-        assertThrows(IllegalArgumentException.class, () -> new JWT.Builder(null).build());
+        assertThrows(IllegalArgumentException.class, () -> new JWT.Builder(null));
     }
 
     @Test

@@ -68,7 +68,7 @@ public class DefaultJWTValidator implements JWTValidator {
 
     private void validateNotBefore(Payload payload, Date currentDate) throws JWTValidationException {
         // Checks that if the not-before (nbf) claim is set, the current date is after or equal to the not-before date.
-        if (payload.containsClaim(Payload.Registered.NOT_BEFORE)) {
+        if (payload.containsClaim(Claims.Registered.NOT_BEFORE.getValue())) {
             Date notBefore = payload.getNotBefore();
             if (currentDate.getTime() <= notBefore.getTime())
                 throw new JWTValidationException("JWT is only valid after " + notBefore);
@@ -76,7 +76,7 @@ public class DefaultJWTValidator implements JWTValidator {
     }
 
     private void validateExpirationTime(Payload payload, Date currentDate) throws JWTExpiredException {
-        if (payload.containsClaim(Payload.Registered.EXPIRATION_TIME)) {
+        if (payload.containsClaim(Claims.Registered.EXPIRATION_TIME.getValue())) {
             Date expirationTime = payload.getExpirationTime();
             if (currentDate.getTime() > expirationTime.getTime())
                 throw new JWTExpiredException("JWT expired on " + expirationTime);
@@ -93,32 +93,32 @@ public class DefaultJWTValidator implements JWTValidator {
         }
 
         public Builder withType(String type) {
-            withHeader(Header.Registered.TYPE, type::equals);
+            withHeader(Claims.Registered.TYPE.getValue(), type::equals);
             return this;
         }
 
         public Builder withContentType(String type) {
-            withHeader(Header.Registered.CONTENT_TYPE, type::equals);
+            withHeader(Claims.Registered.CONTENT_TYPE.getValue(), type::equals);
             return this;
         }
 
         public Builder withAlgorithm(String algorithm) {
-            withHeader(Header.Registered.ALGORITHM, algorithm::equals);
+            withHeader(Claims.Registered.ALGORITHM.getValue(), algorithm::equals);
             return this;
         }
 
         public Builder withIssuer(String issuer) {
-            withClaim(Payload.Registered.ISSUER, issuer::equals);
+            withClaim(Claims.Registered.ISSUER.getValue(), issuer::equals);
             return this;
         }
 
         public Builder withSubject(String subject) {
-            withClaim(Payload.Registered.SUBJECT, subject::equals);
+            withClaim(Claims.Registered.SUBJECT.getValue(), subject::equals);
             return this;
         }
 
         public Builder withOneOfAudience(String... audience) {
-            withClaim(Payload.Registered.AUDIENCE, value -> {
+            withClaim(Claims.Registered.AUDIENCE.getValue(), value -> {
                 for (String audienceItem: audience) {
                     if (Arrays.asList((Object[]) value).contains(audienceItem))
                         return true;
@@ -130,7 +130,7 @@ public class DefaultJWTValidator implements JWTValidator {
         }
 
         public Builder withAllOfAudience(String... audience) {
-            withClaim(Payload.Registered.AUDIENCE, value -> {
+            withClaim(Claims.Registered.AUDIENCE.getValue(), value -> {
                 String[] values = (String[]) value;
                 return Arrays.asList(values).containsAll(Arrays.asList(audience));
             });
@@ -139,37 +139,37 @@ public class DefaultJWTValidator implements JWTValidator {
         }
 
         public Builder withExpirationTime(Date expirationTime) {
-            withClaim(Payload.Registered.EXPIRATION_TIME, value -> value.equals(expirationTime.getTime()));
+            withClaim(Claims.Registered.EXPIRATION_TIME.getValue(), value -> value.equals(expirationTime.getTime()));
             return this;
         }
 
         public Builder withExpirationTime(long timeSinceEpoch) {
-            withClaim(Payload.Registered.EXPIRATION_TIME, value -> value.equals(timeSinceEpoch));
+            withClaim(Claims.Registered.EXPIRATION_TIME.getValue(), value -> value.equals(timeSinceEpoch));
             return this;
         }
 
         public Builder withNotBefore(Date notBefore) {
-            withClaim(Payload.Registered.NOT_BEFORE, value -> value.equals(notBefore.getTime()));
+            withClaim(Claims.Registered.NOT_BEFORE.getValue(), value -> value.equals(notBefore.getTime()));
             return this;
         }
 
         public Builder withNotBefore(long timeSinceEpoch) {
-            withClaim(Payload.Registered.NOT_BEFORE, value -> value.equals(timeSinceEpoch));
+            withClaim(Claims.Registered.NOT_BEFORE.getValue(), value -> value.equals(timeSinceEpoch));
             return this;
         }
 
         public Builder withIssuedAt(Date issuedAt) {
-            withClaim(Payload.Registered.ISSUED_AT, value -> value.equals(issuedAt.getTime()));
+            withClaim(Claims.Registered.ISSUED_AT.getValue(), value -> value.equals(issuedAt.getTime()));
             return this;
         }
 
         public Builder withIssuedAt(long timeSinceEpoch) {
-            withClaim(Payload.Registered.ISSUED_AT, value -> value.equals(timeSinceEpoch));
+            withClaim(Claims.Registered.ISSUED_AT.getValue(), value -> value.equals(timeSinceEpoch));
             return this;
         }
 
         public Builder withID(String id) {
-            withClaim(Payload.Registered.JWT_ID, id::equals);
+            withClaim(Claims.Registered.JWT_ID.getValue(), id::equals);
             return this;
         }
 

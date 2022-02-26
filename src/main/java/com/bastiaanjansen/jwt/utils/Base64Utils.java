@@ -1,7 +1,6 @@
-package com.bastiaanjansen.jwt.Utils;
+package com.bastiaanjansen.jwt.utils;
 
 import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
 import java.util.Base64;
 
 /**
@@ -10,6 +9,8 @@ import java.util.Base64;
  * @author Bastiaan Jansen
  */
 public class Base64Utils {
+
+    private Base64Utils() {}
 
     /**
      * Encode string to base64URL string

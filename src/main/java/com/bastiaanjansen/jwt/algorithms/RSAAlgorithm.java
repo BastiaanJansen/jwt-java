@@ -1,7 +1,7 @@
-package com.bastiaanjansen.jwt.Algorithms;
+package com.bastiaanjansen.jwt.algorithms;
 
-import com.bastiaanjansen.jwt.Exceptions.JWTSignException;
-import com.bastiaanjansen.jwt.Exceptions.JWTValidationException;
+import com.bastiaanjansen.jwt.exceptions.JWTSignException;
+import com.bastiaanjansen.jwt.exceptions.JWTValidationException;
 
 import java.nio.charset.StandardCharsets;
 import java.security.*;

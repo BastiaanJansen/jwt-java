@@ -1,31 +1,17 @@
 package com.bastiaanjansen.jwt;
 
-import com.bastiaanjansen.jwt.Utils.Base64Utils;
+import com.bastiaanjansen.jwt.utils.Base64Utils;
 import org.json.JSONObject;
 
 import java.util.Date;
-import java.util.HashMap;
 import java.util.Map;
 
-public class Payload {
-    public static class Registered {
-        static String ISSUER = "iss";
-        static String SUBJECT = "sub";
-        static String AUDIENCE = "aud";
-        static String EXPIRATION_TIME = "exp";
-        static String NOT_BEFORE = "nbf";
-        static String ISSUED_AT = "iat";
-        static String JWT_ID = "jti";
-    }
+public final class Payload extends Claims {
 
-    private final Map<String, Object> claims;
-
-    public Payload() {
-        claims = new HashMap<>();
-    }
+    public Payload() {}
 
     public Payload(Map<String, Object> map) {
-        claims = new HashMap<>(map);
+        claims.putAll(map);
     }
 
     public static Payload fromBase64EncodedJSON(String encodedJSON) {
@@ -35,29 +21,27 @@ public class Payload {
     }
 
     public void setIssuer(String issuer) {
-        addClaim(Registered.ISSUER, issuer);
+        addClaim(Registered.ISSUER.getValue(), issuer);
     }
 
     public String getIssuer() {
-        Object issuer = claims.get(Registered.ISSUER);
-        return getString(issuer);
+        return getClaim(Registered.ISSUER.getValue(), String.class);
     }
 
     public void setSubject(String subject) {
-        addClaim(Registered.SUBJECT, subject);
+        addClaim(Registered.SUBJECT.getValue(), subject);
     }
 
     public String getSubject() {
-        Object subject = claims.get(Registered.SUBJECT);
-        return getString(subject);
+        return getClaim(Claims.Registered.SUBJECT.getValue(), String.class);
     }
 
     public void setAudience(String... audience) {
-        addClaim(Registered.AUDIENCE, audience);
+        addClaim(Registered.AUDIENCE.getValue(), audience);
     }
 
     public String[] getAudience() {
-        Object audience = claims.get(Registered.AUDIENCE);
+        Object audience = getClaim(Registered.AUDIENCE.getValue(), Object.class);
 
         if (!(audience instanceof Object[]))
             return new String[] {(String) audience};
@@ -66,7 +50,7 @@ public class Payload {
     }
 
     public void setExpirationTime(long timeSinceEpoch) {
-        addClaim(Registered.EXPIRATION_TIME, timeSinceEpoch);
+        addClaim(Registered.EXPIRATION_TIME.getValue(), timeSinceEpoch);
     }
 
     public void setExpirationTime(Date expirationTime) {
@@ -74,12 +58,11 @@ public class Payload {
     }
 
     public Date getExpirationTime() {
-        Object expirationDate = claims.get(Registered.EXPIRATION_TIME);
-        return getDate(expirationDate);
+        return getClaim(Registered.EXPIRATION_TIME.getValue(), Date.class);
     }
 
     public void setNotBefore(long timeSinceEpoch) {
-        addClaim(Registered.NOT_BEFORE, timeSinceEpoch);
+        addClaim(Registered.NOT_BEFORE.getValue(), timeSinceEpoch);
     }
 
     public void setNotBefore(Date notBefore) {
@@ -87,12 +70,11 @@ public class Payload {
     }
 
     public Date getNotBefore() {
-        Object notBefore = claims.get(Registered.NOT_BEFORE);
-        return getDate(notBefore);
+        return getClaim(Registered.NOT_BEFORE.getValue(), Date.class);
     }
 
     public void setIssuedAt(long timeSinceEpoch) {
-        addClaim(Registered.ISSUED_AT, timeSinceEpoch);
+        addClaim(Registered.ISSUED_AT.getValue(), timeSinceEpoch);
     }
 
     public void setIssuedAt(Date issuedAt) {
@@ -100,54 +82,14 @@ public class Payload {
     }
 
     public Date getIssuedAt() {
-        Object issuedAt = claims.get(Registered.ISSUED_AT);
-        return getDate(issuedAt);
+        return getClaim(Registered.ISSUED_AT.getValue(), Date.class);
     }
 
     public void setID(String id) {
-        addClaim(Registered.JWT_ID, id);
+        addClaim(Registered.JWT_ID.getValue(), id);
     }
 
     public String getID() {
-        Object id = claims.get(Registered.JWT_ID);
-        return getString(id);
-    }
-
-    public boolean containsClaim(String name) {
-        return claims.containsKey(name);
-    }
-
-    public void addClaim(String name, Object value) {
-        if (name == null) throw new IllegalArgumentException("name cannot be null");
-        if (value == null) throw new IllegalArgumentException("value cannot be null");
-        claims.put(name, value);
-    }
-
-    public Object get(String name) {
-        return claims.get(name);
-    }
-
-    public Map<String, Object> getAsMap() {
-        return new HashMap<>(claims);
-    }
-
-    public String base64Encoded() {
-        return Base64Utils.encodeBase64URL(new JSONObject(claims).toString());
-    }
-
-    private String getString(Object object) {
-        return object != null ? String.valueOf(object) : null;
-    }
-
-    private Date getDate(Object object) {
-        if (object == null)
-            return null;
-
-        if (object instanceof Number) {
-            long millis = ((Number) object).longValue();
-            return new Date(millis);
-        }
-
-        throw new IllegalStateException("Cannot create date from " + object);
+        return getClaim(Registered.JWT_ID.getValue(), String.class);
     }
 }

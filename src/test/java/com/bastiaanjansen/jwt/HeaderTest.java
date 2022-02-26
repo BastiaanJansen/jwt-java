@@ -35,8 +35,8 @@ class HeaderTest {
     @Test
     void constructorWithMap_getType() {
         Map<String, Object> map = new HashMap<>();
-        map.put(Header.Registered.TYPE, "type");
-        map.put(Header.Registered.ALGORITHM, "HS512");
+        map.put(Claims.Registered.TYPE.getValue(), "type");
+        map.put(Claims.Registered.ALGORITHM.getValue(), "HS512");
         String expected = "type";
 
         header = new Header(map);
@@ -47,8 +47,8 @@ class HeaderTest {
     @Test
     void constructorWithMap_getAlgorithm() {
         Map<String, Object> map = new HashMap<>();
-        map.put(Header.Registered.TYPE, "type");
-        map.put(Header.Registered.ALGORITHM, "HS512");
+        map.put(Claims.Registered.TYPE.getValue(), "type");
+        map.put(Claims.Registered.ALGORITHM.getValue(), "HS512");
         String expected = "HS512";
 
         header = new Header(map);

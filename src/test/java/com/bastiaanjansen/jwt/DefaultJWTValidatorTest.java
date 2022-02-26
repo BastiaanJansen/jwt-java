@@ -1,10 +1,10 @@
 package com.bastiaanjansen.jwt;
 
-import com.bastiaanjansen.jwt.Algorithms.Algorithm;
-import com.bastiaanjansen.jwt.Exceptions.JWTCreationException;
-import com.bastiaanjansen.jwt.Exceptions.JWTDecodeException;
-import com.bastiaanjansen.jwt.Exceptions.JWTExpiredException;
-import com.bastiaanjansen.jwt.Exceptions.JWTValidationException;
+import com.bastiaanjansen.jwt.algorithms.Algorithm;
+import com.bastiaanjansen.jwt.exceptions.JWTCreationException;
+import com.bastiaanjansen.jwt.exceptions.JWTDecodeException;
+import com.bastiaanjansen.jwt.exceptions.JWTExpiredException;
+import com.bastiaanjansen.jwt.exceptions.JWTValidationException;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -157,6 +157,22 @@ class DefaultJWTValidatorTest {
         JWTValidator validator = new DefaultJWTValidator.Builder().withOneOfAudience("aud1").build();
 
         assertDoesNotThrow(() -> validator.validate(jwt));
+    }
+
+    @Test
+    void validateWithValidAllAudience_doesNotThrow() throws JWTCreationException {
+        JWT jwt = new JWT.Builder(algorithm).withAudience("aud1", "aud2", "aud3").build();
+        JWTValidator validator = new DefaultJWTValidator.Builder().withAllOfAudience("aud1", "aud2").build();
+
+        assertDoesNotThrow(() -> validator.validate(jwt));
+    }
+
+    @Test
+    void validateWithValidAllAudience_throwsJWTValidationException() throws JWTCreationException {
+        JWT jwt = new JWT.Builder(algorithm).withAudience("aud1", "aud3").build();
+        JWTValidator validator = new DefaultJWTValidator.Builder().withAllOfAudience("aud1", "aud2").build();
+
+        assertThrows(JWTValidationException.class, () -> validator.validate(jwt));
     }
 
     @Test

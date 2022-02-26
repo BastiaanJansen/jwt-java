@@ -79,13 +79,13 @@ To create the signature part you have to take the Base64URL encoded header, the 
 <dependency>
     <groupId>com.github.bastiaanjansen</groupId>
     <artifactId>jwt-java</artifactId>
-    <version>1.1.0</version>
+    <version>1.2.0</version>
 </dependency>
 ```
 
 ### Gradle
 ```gradle
-implementation 'com.github.bastiaanjansen:jwt-java:1.1.0'
+implementation 'com.github.bastiaanjansen:jwt-java:1.2.0'
 ```
 
 ## Usage
@@ -208,7 +208,7 @@ Date exp = payload.getExpirationTime();
 Date nbf = payload.getNotBefore();
 String[] audience = payload.getAudience();
 
-Object customClaim = payload.get("username");
+String customClaim = payload.getClaim("username", String.class);
 
 boolean hasClaim = payload.containsClaim("key");
 ```
@@ -245,7 +245,7 @@ JWTValidator validator = new DefaultJWTValidator.Builder()
   .withIssuer("issuer")
   .withID("id")
   .withOneOfAudience("aud1", "aud2") // Enforce audience has "aud1" or "aud2"
-  .withCLaim("username", "BastiaanJansen") // Enforce custom claim value
+  .withClaim("username", "BastiaanJansen") // Enforce custom claim value
   .build();
 
 try {

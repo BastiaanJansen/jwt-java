@@ -52,9 +52,9 @@ public class Claims {
         return type.cast(value);
     }
 
-    public <T> T getClaim(String name, ClaimConverter<T> converter) {
+    public <T> T getClaim(String name, ClaimParser<T> parser) {
         Object value = claims.get(name);
-        return converter.convert(value);
+        return parser.parse(value);
     }
 
     public void addClaim(String name, Object value) {

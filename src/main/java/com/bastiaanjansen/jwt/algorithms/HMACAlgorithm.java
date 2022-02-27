@@ -20,11 +20,6 @@ public class HMACAlgorithm extends Algorithm {
     }
 
     @Override
-    public byte[] sign(String data) throws JWTSignException {
-        return sign(data.getBytes(StandardCharsets.UTF_8));
-    }
-
-    @Override
     public byte[] sign(byte[] data) throws JWTSignException {
         try {
             Mac mac = Mac.getInstance(description);

@@ -40,7 +40,9 @@ public abstract class Algorithm {
         return new RSAAlgorithm("RS512", "SHA512withRSA", keyPair);
     }
 
-    public abstract byte[] sign(String data) throws JWTSignException;
+    public byte[] sign(String data) throws JWTSignException {
+        return sign(data.getBytes(StandardCharsets.UTF_8));
+    }
 
     public abstract byte[] sign(byte[] data) throws JWTSignException;
 

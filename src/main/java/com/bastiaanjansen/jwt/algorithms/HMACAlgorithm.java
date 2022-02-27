@@ -5,7 +5,6 @@ import com.bastiaanjansen.jwt.exceptions.JWTValidationException;
 
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
-import java.nio.charset.StandardCharsets;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
@@ -14,7 +13,7 @@ public class HMACAlgorithm extends Algorithm {
 
     private final byte[] secret;
 
-    HMACAlgorithm(String name, String description, byte[] secret) {
+    public HMACAlgorithm(String name, String description, byte[] secret) {
         super(name, description);
         this.secret = secret;
     }

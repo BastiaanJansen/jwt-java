@@ -11,7 +11,7 @@ public abstract class Algorithm {
     protected final String name;
     protected final String description;
 
-    Algorithm(String name, String description) {
+    public Algorithm(String name, String description) {
         this.name = name;
         this.description = description;
     }
@@ -41,7 +41,8 @@ public abstract class Algorithm {
     }
 
     public byte[] sign(String data) throws JWTSignException {
-        return sign(data.getBytes(StandardCharsets.UTF_8));
+        byte[] bytes = data.getBytes(StandardCharsets.UTF_8);
+        return sign(bytes);
     }
 
     public abstract byte[] sign(byte[] data) throws JWTSignException;

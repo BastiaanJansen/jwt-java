@@ -3,14 +3,13 @@ package com.bastiaanjansen.jwt.algorithms;
 import com.bastiaanjansen.jwt.exceptions.JWTSignException;
 import com.bastiaanjansen.jwt.exceptions.JWTValidationException;
 
-import java.nio.charset.StandardCharsets;
 import java.security.*;
 
 public class RSAAlgorithm extends Algorithm {
 
     private final KeyPair keyPair;
 
-    RSAAlgorithm(String name, String description, KeyPair keyPair) {
+    public RSAAlgorithm(String name, String description, KeyPair keyPair) {
         super(name, description);
         this.keyPair = keyPair;
     }

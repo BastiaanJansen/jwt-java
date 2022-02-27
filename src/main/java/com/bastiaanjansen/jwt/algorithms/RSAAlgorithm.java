@@ -17,7 +17,7 @@ public class RSAAlgorithm extends Algorithm {
     @Override
     public byte[] sign(byte[] data) throws JWTSignException {
         try {
-            final Signature signature = Signature.getInstance(description);
+            final Signature signature = Signature.getInstance(jcaName);
             signature.initSign(keyPair.getPrivate());
             signature.update(data);
 
@@ -31,7 +31,7 @@ public class RSAAlgorithm extends Algorithm {
     @Override
     public boolean verify(byte[] data, byte[] expected) throws JWTValidationException {
         try {
-            final Signature signature = Signature.getInstance(description);
+            final Signature signature = Signature.getInstance(jcaName);
             signature.initVerify(keyPair.getPublic());
             signature.update(data);
 

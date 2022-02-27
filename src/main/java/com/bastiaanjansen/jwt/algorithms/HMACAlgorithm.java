@@ -21,9 +21,9 @@ public class HMACAlgorithm extends Algorithm {
     @Override
     public byte[] sign(byte[] data) throws JWTSignException {
         try {
-            Mac mac = Mac.getInstance(description);
+            Mac mac = Mac.getInstance(jcaName);
 
-            SecretKeySpec secretKey = new SecretKeySpec(secret, description);
+            SecretKeySpec secretKey = new SecretKeySpec(secret, jcaName);
             mac.init(secretKey);
 
             return mac.doFinal(data);

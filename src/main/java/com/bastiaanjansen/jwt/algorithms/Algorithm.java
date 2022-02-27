@@ -1,19 +1,16 @@
 package com.bastiaanjansen.jwt.algorithms;
 
-import com.bastiaanjansen.jwt.exceptions.JWTSignException;
-import com.bastiaanjansen.jwt.exceptions.JWTValidationException;
-
 import java.nio.charset.StandardCharsets;
 import java.security.KeyPair;
 
-public abstract class Algorithm {
+public abstract class Algorithm implements AlgorithmVerifier, AlgorithmSigner {
 
     protected final String name;
-    protected final String description;
+    protected final String jcaName;
 
-    public Algorithm(String name, String description) {
+    public Algorithm(String name, String jcaName) {
         this.name = name;
-        this.description = description;
+        this.jcaName = jcaName;
     }
 
     public static Algorithm HMAC256(String secret) {
@@ -40,20 +37,11 @@ public abstract class Algorithm {
         return new RSAAlgorithm("RS512", "SHA512withRSA", keyPair);
     }
 
-    public byte[] sign(String data) throws JWTSignException {
-        byte[] bytes = data.getBytes(StandardCharsets.UTF_8);
-        return sign(bytes);
-    }
-
-    public abstract byte[] sign(byte[] data) throws JWTSignException;
-
-    public abstract boolean verify(byte[] data, byte[] expected) throws JWTValidationException;
-
     public String getName() {
         return name;
     }
 
-    public String getDescription() {
-        return description;
+    public String getJcaName() {
+        return jcaName;
     }
 }

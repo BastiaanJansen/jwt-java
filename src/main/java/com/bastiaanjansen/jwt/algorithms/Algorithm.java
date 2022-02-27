@@ -8,7 +8,7 @@ public abstract class Algorithm implements AlgorithmVerifier, AlgorithmSigner {
     protected final String name;
     protected final String jcaName;
 
-    public Algorithm(String name, String jcaName) {
+    protected Algorithm(String name, String jcaName) {
         this.name = name;
         this.jcaName = jcaName;
     }

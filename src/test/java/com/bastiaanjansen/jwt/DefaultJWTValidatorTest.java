@@ -17,7 +17,7 @@ class DefaultJWTValidatorTest {
 
     @BeforeEach
     void setUp() {
-        this.algorithm = Algorithm.HMAC384("secret");
+        this.algorithm = Algorithm.HMAC384("secret".getBytes());
     }
 
     @AfterEach

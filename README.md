@@ -94,7 +94,7 @@ implementation 'com.github.bastiaanjansen:jwt-java:1.2.0'
 
 To generate a JSON Web Token, you can use the fluent-interface builder API. But first, the builder expects an `Algorithm` instance. The `Algorithm` class has several static helper methods to create concrete `Algorithm` instances. For example, when you want to use the HMAC512 algorithm to sign your JWT's, create an `Algorithm` instance the following way:
 ```java
-Algorithm algorithm = Algorithm.HMAC512("secret");
+Algorithm algorithm = Algorithm.HMAC512("secret".getBytes());
 ```
 
 Or use another algorithm:

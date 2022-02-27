@@ -23,7 +23,7 @@ class JWTTest {
 
     @BeforeEach
     void setUp() {
-        this.algorithm = Algorithm.HMAC384("secret");
+        this.algorithm = Algorithm.HMAC384("secret".getBytes());
         this.jwtString = "eyJhbGciOiJIUzM4NCIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJpc3N1ZXIiLCJhdWQiOiJhdWRpZW5jZSIsImlhdCI6MTYxNDY3NjkyNjE3MiwianRpIjoiaWQifQ.ibsMduBXhE8Y1TkDAazH-J7BaAtcJTcwmHfzvQg9EWS6uKZFsA_7z4LYtSa-nnR1";
     }
 

@@ -39,7 +39,7 @@ class RSAAlgorithmTest {
 
             KeyPair keyPair = new KeyPair(publicKey, privateKey);
 
-            algorithm = new RSAAlgorithm("RS512", "SHA512withRSA", keyPair);
+            algorithm = Algorithm.RSA512(keyPair);
         });
     }
 

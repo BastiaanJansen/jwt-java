@@ -9,8 +9,8 @@ public class RSAAlgorithm extends Algorithm {
 
     private final KeyPair keyPair;
 
-    protected RSAAlgorithm(String name, String jcaName, KeyPair keyPair) {
-        super(name, jcaName);
+    protected RSAAlgorithm(String name, String jcaName, KeyPair keyPair, int minKeyLength) {
+        super(name, jcaName, keyPair.getPrivate(), minKeyLength);
         this.keyPair = keyPair;
     }
 

@@ -14,11 +14,11 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class HMACAlgorithmTest {
 
-    private HMACAlgorithm algorithm;
+    private Algorithm algorithm;
 
     @BeforeEach
     void setUp() {
-        this.algorithm = new HMACAlgorithm("HS512", "HmacSHA256", "KKSDSDBSJDBAPKSDHYUSD".getBytes());
+        this.algorithm = Algorithm.HMAC256("KKSDSDBSJDBAPKSDHYUSD".getBytes());
     }
 
     @AfterEach

@@ -1,10 +1,7 @@
 package com.bastiaanjansen.jwt;
 
 import com.bastiaanjansen.jwt.algorithms.Algorithm;
-import com.bastiaanjansen.jwt.exceptions.JWTCreationException;
-import com.bastiaanjansen.jwt.exceptions.JWTDecodeException;
-import com.bastiaanjansen.jwt.exceptions.JWTExpiredException;
-import com.bastiaanjansen.jwt.exceptions.JWTValidationException;
+import com.bastiaanjansen.jwt.exceptions.*;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -76,7 +73,7 @@ class DefaultJWTValidatorTest {
         JWT jwt = new JWT.Builder(algorithm).withType("type").build();
         JWTValidator validator = new DefaultJWTValidator();
 
-        assertThrows(JWTValidationException.class, () -> validator.validate(jwt));
+        assertThrows(InvalidClaimException.class, () -> validator.validate(jwt));
     }
 
     @Test
@@ -84,7 +81,7 @@ class DefaultJWTValidatorTest {
         JWT jwt = new JWT.Builder(algorithm).withContentType("invalid").build();
         JWTValidator validator = new DefaultJWTValidator.Builder().withContentType("content-type").build();
 
-        assertThrows(JWTValidationException.class, () -> validator.validate(jwt));
+        assertThrows(InvalidClaimException.class, () -> validator.validate(jwt));
     }
 
     @Test
@@ -100,7 +97,7 @@ class DefaultJWTValidatorTest {
         JWT jwt = new JWT.Builder(algorithm).build();
         JWTValidator validator = new DefaultJWTValidator.Builder().withAlgorithm("invalid").build();
 
-        assertThrows(JWTValidationException.class, () -> validator.validate(jwt));
+        assertThrows(InvalidClaimException.class, () -> validator.validate(jwt));
     }
 
     @Test
@@ -116,7 +113,7 @@ class DefaultJWTValidatorTest {
         JWT jwt = new JWT.Builder(algorithm).withIssuer("issuer").build();
         JWTValidator validator = new DefaultJWTValidator.Builder().withIssuer("invalid").build();
 
-        assertThrows(JWTValidationException.class, () -> validator.validate(jwt));
+        assertThrows(InvalidClaimException.class, () -> validator.validate(jwt));
     }
 
     @Test
@@ -132,7 +129,7 @@ class DefaultJWTValidatorTest {
         JWT jwt = new JWT.Builder(algorithm).withSubject("subject").build();
         JWTValidator validator = new DefaultJWTValidator.Builder().withSubject("invalid").build();
 
-        assertThrows(JWTValidationException.class, () -> validator.validate(jwt));
+        assertThrows(InvalidClaimException.class, () -> validator.validate(jwt));
     }
 
     @Test
@@ -148,7 +145,7 @@ class DefaultJWTValidatorTest {
         JWT jwt = new JWT.Builder(algorithm).withAudience("aud1", "aud2").build();
         JWTValidator validator = new DefaultJWTValidator.Builder().withOneOfAudience("invalid").build();
 
-        assertThrows(JWTValidationException.class, () -> validator.validate(jwt));
+        assertThrows(InvalidClaimException.class, () -> validator.validate(jwt));
     }
 
     @Test
@@ -172,7 +169,7 @@ class DefaultJWTValidatorTest {
         JWT jwt = new JWT.Builder(algorithm).withAudience("aud1", "aud3").build();
         JWTValidator validator = new DefaultJWTValidator.Builder().withAllOfAudience("aud1", "aud2").build();
 
-        assertThrows(JWTValidationException.class, () -> validator.validate(jwt));
+        assertThrows(InvalidClaimException.class, () -> validator.validate(jwt));
     }
 
     @Test
@@ -180,7 +177,7 @@ class DefaultJWTValidatorTest {
         JWT jwt = new JWT.Builder(algorithm).withExpirationTime(100).build();
         JWTValidator validator = new DefaultJWTValidator.Builder().withExpirationTime(200).build();
 
-        assertThrows(JWTValidationException.class, () -> validator.validate(jwt));
+        assertThrows(JWTExpiredException.class, () -> validator.validate(jwt));
     }
 
     @Test
@@ -198,7 +195,7 @@ class DefaultJWTValidatorTest {
         JWT jwt = new JWT.Builder(algorithm).withNotBefore(date).build();
         JWTValidator validator = new DefaultJWTValidator.Builder().withNotBefore(100).build();
 
-        assertThrows(JWTValidationException.class, () -> validator.validate(jwt));
+        assertThrows(InvalidClaimException.class, () -> validator.validate(jwt));
     }
 
     @Test
@@ -216,7 +213,7 @@ class DefaultJWTValidatorTest {
         JWT jwt = new JWT.Builder(algorithm).withIssuedAt(date).build();
         JWTValidator validator = new DefaultJWTValidator.Builder().withIssuedAt(200).build();
 
-        assertThrows(JWTValidationException.class, () -> validator.validate(jwt));
+        assertThrows(InvalidClaimException.class, () -> validator.validate(jwt));
     }
 
     @Test
@@ -233,7 +230,7 @@ class DefaultJWTValidatorTest {
         JWT jwt = new JWT.Builder(algorithm).withID("id").build();
         JWTValidator validator = new DefaultJWTValidator.Builder().withID("invalid").build();
 
-        assertThrows(JWTValidationException.class, () -> validator.validate(jwt));
+        assertThrows(InvalidClaimException.class, () -> validator.validate(jwt));
     }
 
     @Test
@@ -257,7 +254,7 @@ class DefaultJWTValidatorTest {
         JWT jwt = new JWT.Builder(algorithm).withHeader("test", "value").build();
         JWTValidator validator = new DefaultJWTValidator.Builder().withHeader("test", "invalid"::equals).build();
 
-        assertThrows(JWTValidationException.class, () -> validator.validate(jwt));
+        assertThrows(InvalidClaimException.class, () -> validator.validate(jwt));
     }
 
     @Test
@@ -273,46 +270,62 @@ class DefaultJWTValidatorTest {
         JWT jwt = new JWT.Builder(algorithm).withClaim("test", "value").build();
         JWTValidator validator = new DefaultJWTValidator.Builder().withClaim("test", "invalid"::equals).build();
 
-        assertThrows(JWTValidationException.class, () -> validator.validate(jwt));
+        assertThrows(InvalidClaimException.class, () -> validator.validate(jwt));
     }
 
     @Test
     void validateWithHeaderNameIsNull_throwsIllegalArgumentException() {
-        assertThrows(IllegalArgumentException.class, () -> new DefaultJWTValidator.Builder().withHeader(null, "value").build());
+        DefaultJWTValidator.Builder builder = new DefaultJWTValidator.Builder();
+
+        assertThrows(IllegalArgumentException.class, () -> builder.withHeader(null, "value"));
     }
 
     @Test
     void validateWithHeaderValueIsNull_throwsIllegalArgumentException() {
-        assertThrows(IllegalArgumentException.class, () -> new DefaultJWTValidator.Builder().withHeader("name", null).build());
+        DefaultJWTValidator.Builder builder = new DefaultJWTValidator.Builder();
+
+        assertThrows(IllegalArgumentException.class, () -> builder.withHeader("name", null));
     }
 
     @Test
     void validateWithCustomHeaderNameIsNull_throwsIllegalArgumentException() {
-        assertThrows(IllegalArgumentException.class, () -> new DefaultJWTValidator.Builder().withHeader(null, value -> false).build());
+        DefaultJWTValidator.Builder builder = new DefaultJWTValidator.Builder();
+
+        assertThrows(IllegalArgumentException.class, () -> builder.withHeader(null, value -> false));
     }
 
     @Test
     void validateWithCustomHeaderValidatorIsNull_throwsIllegalArgumentException() {
-        assertThrows(IllegalArgumentException.class, () -> new DefaultJWTValidator.Builder().withHeader("name", null).build());
+        DefaultJWTValidator.Builder builder = new DefaultJWTValidator.Builder();
+
+        assertThrows(IllegalArgumentException.class, () -> builder.withHeader("name", null));
     }
 
     @Test
     void validateWithClaimNameIsNull_throwsIllegalArgumentException() {
-        assertThrows(IllegalArgumentException.class, () -> new DefaultJWTValidator.Builder().withClaim(null, "value").build());
+        DefaultJWTValidator.Builder builder = new DefaultJWTValidator.Builder();
+
+        assertThrows(IllegalArgumentException.class, () -> builder.withClaim(null, "value"));
     }
 
     @Test
     void validateWithClaimValueIsNull_throwsIllegalArgumentException() {
-        assertThrows(IllegalArgumentException.class, () -> new DefaultJWTValidator.Builder().withClaim("name", null).build());
+        DefaultJWTValidator.Builder builder = new DefaultJWTValidator.Builder();
+
+        assertThrows(IllegalArgumentException.class, () -> builder.withClaim("name", null));
     }
 
     @Test
     void validateWithCustomClaimNameIsNull_throwsIllegalArgumentException() {
-        assertThrows(IllegalArgumentException.class, () -> new DefaultJWTValidator.Builder().withClaim(null, value -> false).build());
+        DefaultJWTValidator.Builder builder = new DefaultJWTValidator.Builder();
+
+        assertThrows(IllegalArgumentException.class, () -> builder.withClaim(null, value -> false));
     }
 
     @Test
     void validateWithCustomClaimValidatorIsNull_throwsIllegalArgumentException() {
-        assertThrows(IllegalArgumentException.class, () -> new DefaultJWTValidator.Builder().withClaim("name", null).build());
+        DefaultJWTValidator.Builder builder = new DefaultJWTValidator.Builder();
+
+        assertThrows(IllegalArgumentException.class, () -> builder.withClaim("name", null));
     }
 }

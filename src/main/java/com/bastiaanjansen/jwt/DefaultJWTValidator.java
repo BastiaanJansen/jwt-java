@@ -1,7 +1,9 @@
 package com.bastiaanjansen.jwt;
 
+import com.bastiaanjansen.jwt.exceptions.InvalidClaimException;
 import com.bastiaanjansen.jwt.exceptions.JWTExpiredException;
 import com.bastiaanjansen.jwt.exceptions.JWTValidationException;
+import com.bastiaanjansen.jwt.exceptions.MissingClaimException;
 
 import java.nio.charset.StandardCharsets;
 import java.util.*;
@@ -48,13 +50,10 @@ public class DefaultJWTValidator implements JWTValidator {
             ClaimValidator validator = validatorEntry.getValue();
 
             if (!map.containsKey(key))
-                throw new JWTValidationException(key + " is not present in payload");
-
-            if (map.get(key) == null)
-                throw new JWTValidationException(key + " is null");
+                throw new MissingClaimException(key + " is not present in payload");
 
             if (!validator.validate(map.get(key)))
-                throw new JWTValidationException(key + " does not conform to constraint");
+                throw new InvalidClaimException(key + " does not conform to constraint");
         }
     }
 
@@ -71,7 +70,7 @@ public class DefaultJWTValidator implements JWTValidator {
         if (payload.containsClaim(Claims.Registered.NOT_BEFORE.getValue())) {
             Date notBefore = payload.getNotBefore();
             if (currentDate.getTime() <= notBefore.getTime())
-                throw new JWTValidationException("JWT is only valid after " + notBefore);
+                throw new InvalidClaimException("JWT is only valid after " + notBefore);
         }
     }
 

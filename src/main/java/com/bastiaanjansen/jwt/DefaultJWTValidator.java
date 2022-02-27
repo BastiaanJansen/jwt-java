@@ -1,9 +1,6 @@
 package com.bastiaanjansen.jwt;
 
-import com.bastiaanjansen.jwt.exceptions.InvalidClaimException;
-import com.bastiaanjansen.jwt.exceptions.JWTExpiredException;
-import com.bastiaanjansen.jwt.exceptions.JWTValidationException;
-import com.bastiaanjansen.jwt.exceptions.MissingClaimException;
+import com.bastiaanjansen.jwt.exceptions.*;
 
 import java.nio.charset.StandardCharsets;
 import java.util.*;
@@ -35,16 +32,20 @@ public class DefaultJWTValidator implements JWTValidator {
         verifyPayload(jwt.getPayload());
     }
 
-    private void validateAlgorithm(JWT jwt) throws JWTValidationException {
+    private void validateAlgorithm(JWT jwt) throws InvalidSignatureException {
         String concatenated = String.format("%s.%s", jwt.getHeader().base64Encoded(), jwt.getPayload().base64Encoded());
 
         byte[] concatenatedBytes = concatenated.getBytes(StandardCharsets.UTF_8);
 
-        if (!jwt.getAlgorithm().verify(concatenatedBytes, Base64.getUrlDecoder().decode(jwt.getSignature())))
-            throw new JWTValidationException("Signature is not valid");
+        try {
+            if (!jwt.getAlgorithm().verify(concatenatedBytes, Base64.getUrlDecoder().decode(jwt.getSignature())))
+                throw new JWTValidationException();
+        } catch (JWTValidationException e) {
+            throw new InvalidSignatureException("Signature is not valid");
+        }
     }
 
-    private void verifyValidators(Map<String, Object> map , Map<String, ClaimValidator> validators) throws JWTValidationException {
+    private void verifyValidators(Map<String, Object> map , Map<String, ClaimValidator> validators) throws MissingClaimException, InvalidClaimException, JWTExpiredException {
         for (Map.Entry<String, ClaimValidator> validatorEntry: validators.entrySet()) {
             String key = validatorEntry.getKey();
             ClaimValidator validator = validatorEntry.getValue();
@@ -57,7 +58,7 @@ public class DefaultJWTValidator implements JWTValidator {
         }
     }
 
-    private void verifyPayload(Payload payload) throws JWTValidationException {
+    private void verifyPayload(Payload payload) throws JWTExpiredException, InvalidClaimException, MissingClaimException {
         Date currentDate = new Date();
 
         validateExpirationTime(payload, currentDate);
@@ -65,7 +66,7 @@ public class DefaultJWTValidator implements JWTValidator {
         verifyValidators(payload.getAsMap(), payloadValidators);
     }
 
-    private void validateNotBefore(Payload payload, Date currentDate) throws JWTValidationException {
+    private void validateNotBefore(Payload payload, Date currentDate) throws InvalidClaimException {
         // Checks that if the not-before (nbf) claim is set, the current date is after or equal to the not-before date.
         if (payload.containsClaim(Claims.Registered.NOT_BEFORE.getValue())) {
             Date notBefore = payload.getNotBefore();

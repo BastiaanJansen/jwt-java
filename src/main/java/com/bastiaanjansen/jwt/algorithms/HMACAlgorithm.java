@@ -4,6 +4,7 @@ import com.bastiaanjansen.jwt.exceptions.JWTSignException;
 import com.bastiaanjansen.jwt.exceptions.JWTValidationException;
 
 import javax.crypto.Mac;
+import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
@@ -11,11 +12,11 @@ import java.util.Arrays;
 
 public class HMACAlgorithm extends Algorithm {
 
-    private final byte[] secret;
+    private final SecretKey key;
 
-    public HMACAlgorithm(String name, String description, byte[] secret) {
-        super(name, description);
-        this.secret = secret;
+    protected HMACAlgorithm(String name, String jcaName, byte[] key) {
+        super(name, jcaName);
+        this.key = new SecretKeySpec(key, jcaName);
     }
 
     @Override
@@ -23,8 +24,7 @@ public class HMACAlgorithm extends Algorithm {
         try {
             Mac mac = Mac.getInstance(jcaName);
 
-            SecretKeySpec secretKey = new SecretKeySpec(secret, jcaName);
-            mac.init(secretKey);
+            mac.init(key);
 
             return mac.doFinal(data);
         } catch (NoSuchAlgorithmException | InvalidKeyException e) {

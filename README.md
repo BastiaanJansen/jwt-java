@@ -213,6 +213,33 @@ String customClaim = payload.getClaim("username", String.class);
 boolean hasClaim = payload.containsClaim("key");
 ```
 
+#### Parsing custom claims
+When you have a json object in a claim, you can use a `ClaimParser` to parse the json to the corresponding type. For example, when you have the following json in a claim with the name 'user':
+```json
+"user": {
+   "firstname": "John",
+   "lastname": "Doe"
+}
+```
+
+```java
+ObjectMapper objectMapper = new ObjectMapper(); // Or use another mapper
+
+payload.getClaim("user", new ClaimParser<User>() {
+   @Override
+   public User parse(Object value) {
+       String json = String.valueOf(value);
+       return objectMapper.readValue(json, User.class);
+   }
+});
+
+// Or with a lambda
+User user = payload.getClaim("user", value -> {
+   return objectMapper.readValue(String.valueOf(value), User.class);
+});
+```
+> **Note:** If a claim named 'user' is not present in the payload, `value` will be null.
+
 ### Validating JWT's
 
 #### Basic validation

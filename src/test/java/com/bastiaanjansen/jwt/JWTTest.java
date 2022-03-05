@@ -7,6 +7,8 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.function.Executable;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
 import java.util.Date;
 import java.util.HashMap;
@@ -257,31 +259,14 @@ class JWTTest {
         assertThat(jwt.getPayload().getIssuedAt(), is(expected));
     }
 
-    @Test
-    void fromRawMalformedJWT_throwsJWTCreationException() {
-        String jwt = "eyJhbGciOiJIUzM4NCIssdsdjkhInR5cCI6IkpXVCJ9shdkshdsdssdljs.eyJpc3MiOiJpc3N1ZXIiLCJhdWQiOiJhdWRpZW5jZSIsImlhdCI6MTYxNDY3NjkyNjE3MiwianRpIjoiaWQifQ.ibsMduBXhE8Y1TkDAazH-J7BaAtcJTcwmHfzvQg9EWS6uKZFsA_7z4LYtSa-nnR1";
-
-        assertThrows(JWTDecodeException.class, () -> JWT.fromRawJWT(algorithm, jwt));
-    }
-
-    @Test
-    void fromRawJWTWithTwoSegments_throwsJWTDecodeException() {
-        String jwt = "segment1.segment2";
-
-        assertThrows(JWTDecodeException.class, () -> JWT.fromRawJWT(algorithm, jwt));
-    }
-
-    @Test
-    void fromRawJWTWithOneSegments_throwsJWTDecodeException() {
-        String jwt = "segment1";
-
-        assertThrows(JWTDecodeException.class, () -> JWT.fromRawJWT(algorithm, jwt));
-    }
-
-    @Test
-    void fromRawJWTWithEmptyString_throwsJWTDecodeException() {
-        String jwt = "";
-
+    @ParameterizedTest
+    @ValueSource(strings = {
+            "eyJhbGciOiJIUzM4NCIssdsdjkhInR5cCI6IkpXVCJ9shdkshdsdssdljs.eyJpc3MiOiJpc3N1ZXIiLCJhdWQiOiJhdWRpZW5jZSIsImlhdCI6MTYxNDY3NjkyNjE3MiwianRpIjoiaWQifQ.ibsMduBXhE8Y1TkDAazH-J7BaAtcJTcwmHfzvQg9EWS6uKZFsA_7z4LYtSa-nnR1",
+            "segment1.segment2",
+            "segment1",
+            "",
+    })
+    void fromRawMalformedJWT_throwsJWTCreationException(String jwt) {
         assertThrows(JWTDecodeException.class, () -> JWT.fromRawJWT(algorithm, jwt));
     }
 

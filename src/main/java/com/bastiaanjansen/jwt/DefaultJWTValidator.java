@@ -45,7 +45,7 @@ public class DefaultJWTValidator implements JWTValidator {
         }
     }
 
-    private void verifyValidators(Map<String, Object> map , Map<String, ClaimValidator> validators) throws MissingClaimException, InvalidClaimException, JWTExpiredException {
+    private void verifyValidators(Map<String, Object> map , Map<String, ClaimValidator> validators) throws MissingClaimException, InvalidClaimException {
         for (Map.Entry<String, ClaimValidator> validatorEntry: validators.entrySet()) {
             String key = validatorEntry.getKey();
             ClaimValidator validator = validatorEntry.getValue();

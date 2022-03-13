@@ -341,8 +341,7 @@ public final class JWT {
          * @param claims the values used in the payload
          */
         public Builder withClaim(Map<String, ?> claims) {
-            for (Map.Entry<String, ?> claim: claims.entrySet())
-                withClaim(claim.getKey(), claim.getValue());
+            claims.forEach(this::withClaim);
             return this;
         }
 

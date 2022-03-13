@@ -40,13 +40,6 @@ public final class JWT {
         this.signature = signature;
     }
 
-    private JWT(Builder builder) throws JWTCreationException {
-        algorithm = builder.algorithm;
-        payload = builder.payload;
-        header = builder.header;
-        signature = createSignature();
-    }
-
     public Algorithm getAlgorithm() {
         return algorithm;
     }
@@ -362,7 +355,7 @@ public final class JWT {
         public String sign() throws JWTCreationException {
             if (!header.containsClaim(Claims.Registered.TYPE.getValue()))
                 withType("JWT");
-            return new JWT(this).sign();
+            return build().sign();
         }
 
         /**
@@ -383,7 +376,7 @@ public final class JWT {
          * @return New JWT instance
          */
         public JWT build() throws JWTCreationException {
-            return new JWT(this);
+            return new JWT(algorithm, header, payload);
         }
     }
 }
